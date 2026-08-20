@@ -1,0 +1,3793 @@
+<title>MLA-C01 Answer Sheet</title>
+
+<!-- ==========================================================================
+     ADD YOUR QUESTIONS BELOW.
+     Copy a template from the bottom of the QUESTIONS list and fill it in.
+     Two question types are supported:
+       (default)      pick one lettered option
+       type: "order"  pick options in the correct sequence (HOTSPOT ordering)
+     Everything else on the page updates automatically.
+     ========================================================================== -->
+<script>
+// Case studies are written once and referenced by key, so a case study shared
+// by several questions is not repeated in the data.
+const CASE_STUDIES = {
+  sagemakerApp: `A company is building a web-based AI application by using Amazon SageMaker. The application will provide the following capabilities and features: ML experimentation, training, a central model registry, model deployment, and model monitoring.
+
+The application must ensure secure and isolated use of training data during the ML lifecycle. The training data is stored in Amazon S3.`,
+
+  fraud: `An ML engineer is developing a fraud detection model on AWS. The training dataset includes transaction logs, customer profiles, and tables from an on-premises MySQL database. The transaction logs and customer profiles are stored in Amazon S3.
+
+The dataset has a class imbalance that affects the learning of the model's algorithm. Additionally, many of the features have interdependencies. The algorithm is not capturing all the desired underlying patterns in the data.`
+};
+
+const QUESTIONS = [
+  {
+    id: 1,
+    topic: 1,
+    caseStudy: "sagemakerApp",
+    stem: `The company needs to use the central model registry to manage different versions of models in the application.
+
+Which action will meet this requirement with the LEAST operational overhead?`,
+    options: {
+      A: "Create a separate Amazon Elastic Container Registry (Amazon ECR) repository for each model.",
+      B: "Use Amazon Elastic Container Registry (Amazon ECR) and unique tags for each model version.",
+      C: "Use the SageMaker Model Registry and model groups to catalog the models.",
+      D: "Use the SageMaker Model Registry and unique tags for each model version."
+    },
+    answer: "C",
+    votes: [["C", 100]]
+  },
+  {
+    id: 2,
+    topic: 1,
+    caseStudy: "sagemakerApp",
+    stem: `The company is experimenting with consecutive training jobs.
+
+How can the company MINIMIZE infrastructure startup times for these jobs?`,
+    options: {
+      A: "Use Managed Spot Training.",
+      B: "Use SageMaker managed warm pools.",
+      C: "Use SageMaker Training Compiler.",
+      D: "Use the SageMaker distributed data parallelism (SMDDP) library."
+    },
+    answer: "B",
+    votes: [["B", 100]]
+  },
+  {
+    id: 3,
+    topic: 1,
+    caseStudy: "sagemakerApp",
+    stem: `The company must implement a manual approval-based workflow to ensure that only approved models can be deployed to production endpoints.
+
+Which solution will meet this requirement?`,
+    options: {
+      A: "Use SageMaker Experiments to facilitate the approval process during model registration.",
+      B: "Use SageMaker ML Lineage Tracking on the central model registry. Create tracking entities for the approval process.",
+      C: "Use SageMaker Model Monitor to evaluate the performance of the model and to manage the approval.",
+      D: `Use SageMaker Pipelines. When a model version is registered, use the AWS SDK to change the approval status to "Approved."`
+    },
+    answer: "D",
+    votes: [["D", 100]]
+  },
+  {
+    id: 4,
+    topic: 1,
+    caseStudy: "sagemakerApp",
+    stem: `The company needs to run an on-demand workflow to monitor bias drift for models that are deployed to real-time endpoints from the application.
+
+Which action will meet this requirement?`,
+    options: {
+      A: "Configure the application to invoke an AWS Lambda function that runs a SageMaker Clarify job.",
+      B: "Invoke an AWS Lambda function to pull the sagemaker-model-monitor-analyzer built-in SageMaker image.",
+      C: "Use AWS Glue Data Quality to monitor bias.",
+      D: "Use SageMaker notebooks to compare the bias."
+    },
+    answer: "A",
+    votes: [["A", 100]]
+  },
+  {
+    id: 5,
+    topic: 1,
+    type: "order",
+    format: "HOTSPOT",
+    stem: `A company stores historical data in .csv files in Amazon S3. Only some of the rows and columns in the .csv files are populated. The columns are not labeled. An ML engineer needs to prepare and store the data so that the company can use the data to train ML models.
+
+Select and order the correct steps from the following list to perform this task. Each step should be selected one time or not at all. (Select and order three.)`,
+    options: {
+      A: "Create an Amazon SageMaker batch transform job for data cleaning and feature engineering.",
+      B: "Store the resulting data back in Amazon S3.",
+      C: "Use Amazon Athena to infer the schemas and available columns.",
+      D: "Use AWS Glue crawlers to infer the schemas and available columns.",
+      E: "Use AWS Glue DataBrew for data cleaning and feature engineering."
+    },
+    answer: ["D", "E", "B"],
+    keyNote: "The published answer is an image. This key is the standard ordering — confirm it against your source."
+  },
+  {
+    id: 6,
+    topic: 1,
+    type: "order",
+    format: "HOTSPOT",
+    stem: `An ML engineer needs to use Amazon SageMaker Feature Store to create and manage features to train a model.
+
+Select and order the steps from the following list to create and use the features in Feature Store. Each step should be selected one time. (Select and order three.)`,
+    options: {
+      A: "Access the store to build datasets for training.",
+      B: "Create a feature group.",
+      C: "Ingest the records."
+    },
+    answer: ["B", "C", "A"],
+    explanation: `Create a feature group to organize the features, ingest the records into that group, then access the store to build datasets for training.`
+  },
+  {
+    id: 7,
+    topic: 1,
+    type: "order",
+    format: "HOTSPOT",
+    stem: `A company wants to host an ML model on Amazon SageMaker. An ML engineer is configuring a continuous integration and continuous delivery (CI/CD) pipeline in AWS CodePipeline to deploy the model. The pipeline must run automatically when new training data for the model is uploaded to an Amazon S3 bucket.
+
+Select and order the pipeline's correct steps from the following list. Each step should be selected one time or not at all. (Select and order three.)`,
+    options: {
+      A: "An S3 event notification invokes the pipeline when new data is uploaded.",
+      B: "S3 Lifecycle rule invokes the pipeline when new data is uploaded.",
+      C: "SageMaker retrains the model by using the data in the S3 bucket.",
+      D: "The pipeline deploys the model to a SageMaker endpoint.",
+      E: "The pipeline deploys the model to SageMaker Model Registry."
+    },
+    answer: ["A", "C", "D"],
+    keyNote: "The published answer is an image. This key is the standard ordering — confirm it against your source."
+  },
+
+  // Q8, Q9 and Q94 are HOTSPOT matching questions. The source dump carries only
+  // the list of terms to choose from — the rows those terms get matched to, and
+  // the marked answer, were images, so they leave no text behind. See
+  // ADDING-QUESTIONS.md for the evidence and a ready-to-fill skeleton.
+  //
+  // {
+  //   id: 8,
+  //   topic: 1,
+  //   type: "match",
+  //   format: "HOTSPOT",
+  //   stem: `An ML engineer is building a generative AI application on Amazon Bedrock by using large language models (LLMs).
+  //
+  // Select the correct generative AI term from the following list for each description. Each term should be selected one time or not at all. (Select three.)`,
+  //   prompts: [
+  //     "<description 1 from the image>",
+  //     "<description 2 from the image>",
+  //     "<description 3 from the image>"
+  //   ],
+  //   options: {
+  //     A: "Embedding",
+  //     B: "Retrieval Augmented Generation (RAG)",
+  //     C: "Temperature",
+  //     D: "Token"
+  //   },
+  //   answer: ["<letter for row 1>", "<letter for row 2>", "<letter for row 3>"]
+  // },
+
+  {
+    id: 10,
+    topic: 1,
+    caseStudy: "fraud",
+    stem: `Which AWS service or feature can aggregate the data from the various data sources?`,
+    options: {
+      A: "Amazon EMR Spark jobs",
+      B: "Amazon Kinesis Data Streams",
+      C: "Amazon DynamoDB",
+      D: "AWS Lake Formation"
+    },
+    answer: "D",
+    votes: [["D", 100]]
+  },
+  {
+    id: 11,
+    topic: 1,
+    caseStudy: "fraud",
+    stem: `After the data is aggregated, the ML engineer must implement a solution to automatically detect anomalies in the data and to visualize the result.
+
+Which solution will meet these requirements?`,
+    options: {
+      A: "Use Amazon Athena to automatically detect the anomalies and to visualize the result.",
+      B: "Use Amazon Redshift Spectrum to automatically detect the anomalies. Use Amazon QuickSight to visualize the result.",
+      C: "Use Amazon SageMaker Data Wrangler to automatically detect the anomalies and to visualize the result.",
+      D: "Use AWS Batch to automatically detect the anomalies. Use Amazon QuickSight to visualize the result."
+    },
+    answer: "C",
+    votes: [["C", 100]]
+  },
+  {
+    id: 12,
+    topic: 1,
+    caseStudy: "fraud",
+    stem: `The training dataset includes categorical data and numerical data. The ML engineer must prepare the training dataset to maximize the accuracy of the model.
+
+Which action will meet this requirement with the LEAST operational overhead?`,
+    options: {
+      A: "Use AWS Glue to transform the categorical data into numerical data.",
+      B: "Use AWS Glue to transform the numerical data into categorical data.",
+      C: "Use Amazon SageMaker Data Wrangler to transform the categorical data into numerical data.",
+      D: "Use Amazon SageMaker Data Wrangler to transform the numerical data into categorical data."
+    },
+    answer: "C",
+    votes: [["C", 100]]
+  },
+  {
+    id: 13,
+    topic: 1,
+    caseStudy: "fraud",
+    stem: `Before the ML engineer trains the model, the ML engineer must resolve the issue of the imbalanced data.
+
+Which solution will meet this requirement with the LEAST operational effort?`,
+    options: {
+      A: "Use Amazon Athena to identify patterns that contribute to the imbalance. Adjust the dataset accordingly.",
+      B: "Use Amazon SageMaker Studio Classic built-in algorithms to process the imbalanced dataset.",
+      C: "Use AWS Glue DataBrew built-in features to oversample the minority class.",
+      D: "Use the Amazon SageMaker Data Wrangler balance data operation to oversample the minority class."
+    },
+    answer: "D",
+    votes: [["D", 100]]
+  },
+  {
+    id: 14,
+    topic: 1,
+    caseStudy: "fraud",
+    stem: `The ML engineer needs to use an Amazon SageMaker built-in algorithm to train the model.
+
+Which algorithm should the ML engineer use to meet this requirement?`,
+    options: {
+      A: "LightGBM",
+      B: "Linear learner",
+      C: "K-means clustering",
+      D: "Neural Topic Model (NTM)"
+    },
+    answer: "A",
+    votes: [["A", 70], ["B", 30]]
+  },
+  {
+    id: 15,
+    topic: 1,
+    stem: `A company has deployed an XGBoost prediction model in production to predict if a customer is likely to cancel a subscription. The company uses Amazon SageMaker Model Monitor to detect deviations in the F1 score.
+
+During a baseline analysis of model quality, the company recorded a threshold for the F1 score. After several months of no change, the model's F1 score decreases significantly.
+
+What could be the reason for the reduced F1 score?`,
+    options: {
+      A: "Concept drift occurred in the underlying customer data that was used for predictions.",
+      B: "The model was not sufficiently complex to capture all the patterns in the original baseline data.",
+      C: "The original baseline data had a data quality issue of missing values.",
+      D: "Incorrect ground truth labels were provided to Model Monitor during the calculation of the baseline."
+    },
+    answer: "A",
+    votes: [["A", 100]]
+  },
+  {
+    id: 16,
+    topic: 1,
+    stem: `A company has a team of data scientists who use Amazon SageMaker notebook instances to test ML models. When the data scientists need new permissions, the company attaches the permissions to each individual role that was created during the creation of the SageMaker notebook instance.
+
+The company needs to centralize management of the team's permissions.
+
+Which solution will meet this requirement?`,
+    options: {
+      A: "Create a single IAM role that has the necessary permissions. Attach the role to each notebook instance that the team uses.",
+      B: "Create a single IAM group. Add the data scientists to the group. Associate the group with each notebook instance that the team uses.",
+      C: "Create a single IAM user. Attach the AdministratorAccess AWS managed IAM policy to the user. Configure each notebook instance to use the IAM user.",
+      D: "Create a single IAM group. Add the data scientists to the group. Create an IAM role. Attach the AdministratorAccess AWS managed IAM policy to the role. Associate the role with the group. Associate the group with each notebook instance that the team uses."
+    },
+    answer: "A",
+    votes: [["A", 100]]
+  },
+  {
+    id: 17,
+    topic: 1,
+    stem: `An ML engineer needs to use an ML model to predict the price of apartments in a specific location.
+
+Which metric should the ML engineer use to evaluate the model's performance?`,
+    options: {
+      A: "Accuracy",
+      B: "Area Under the ROC Curve (AUC)",
+      C: "F1 score",
+      D: "Mean absolute error (MAE)"
+    },
+    answer: "D",
+    votes: [["D", 100]]
+  },
+  {
+    id: 18,
+    topic: 1,
+    stem: `An ML engineer has trained a neural network by using stochastic gradient descent (SGD). The neural network performs poorly on the test set. The values for training loss and validation loss remain high and show an oscillating pattern. The values decrease for a few epochs and then increase for a few epochs before repeating the same cycle.
+
+What should the ML engineer do to improve the training process?`,
+    options: {
+      A: "Introduce early stopping.",
+      B: "Increase the size of the test set.",
+      C: "Increase the learning rate.",
+      D: "Decrease the learning rate."
+    },
+    answer: "D",
+    votes: [["D", 100]]
+  },
+  {
+    id: 19,
+    topic: 1,
+    stem: `An ML engineer needs to process thousands of existing CSV objects and new CSV objects that are uploaded. The CSV objects are stored in a central Amazon S3 bucket and have the same number of columns. One of the columns is a transaction date. The ML engineer must query the data based on the transaction date.
+
+Which solution will meet these requirements with the LEAST operational overhead?`,
+    options: {
+      A: "Use an Amazon Athena CREATE TABLE AS SELECT (CTAS) statement to create a table based on the transaction date from data in the central S3 bucket. Query the objects from the table.",
+      B: "Create a new S3 bucket for processed data. Set up S3 replication from the central S3 bucket to the new S3 bucket. Use S3 Object Lambda to query the objects based on transaction date.",
+      C: "Create a new S3 bucket for processed data. Use AWS Glue for Apache Spark to create a job to query the CSV objects based on transaction date. Configure the job to store the results in the new S3 bucket. Query the objects from the new S3 bucket.",
+      D: "Create a new S3 bucket for processed data. Use Amazon Data Firehose to transfer the data from the central S3 bucket to the new S3 bucket. Configure Firehose to run an AWS Lambda function to query the data based on transaction date."
+    },
+    answer: "A",
+    votes: [["A", 100]]
+  },
+  {
+    id: 20,
+    topic: 1,
+    stem: `A company has a large, unstructured dataset. The dataset includes many duplicate records across several key attributes.
+
+Which solution on AWS will detect duplicates in the dataset with the LEAST code development?`,
+    options: {
+      A: "Use Amazon Mechanical Turk jobs to detect duplicates.",
+      B: "Use Amazon QuickSight ML Insights to build a custom deduplication model.",
+      C: "Use Amazon SageMaker Data Wrangler to pre-process and detect duplicates.",
+      D: "Use the AWS Glue FindMatches transform to detect duplicates."
+    },
+    answer: "D",
+    votes: [["D", 79], ["?", 11], ["?", 11]]
+  },
+  {
+    id: 21,
+    topic: 1,
+    stem: `A company needs to run a batch data-processing job on Amazon EC2 instances. The job will run during the weekend and will take 90 minutes to finish running. The processing can handle interruptions. The company will run the job every weekend for the next 6 months.
+
+Which EC2 instance purchasing option will meet these requirements MOST cost-effectively?`,
+    options: {
+      A: "Spot Instances",
+      B: "Reserved Instances",
+      C: "On-Demand Instances",
+      D: "Dedicated Instances"
+    },
+    answer: "A"
+  },
+  {
+    id: 22,
+    topic: 1,
+    stem: `An ML engineer has an Amazon Comprehend custom model in Account A in the us-east-1 Region. The ML engineer needs to copy the model to Account B in the same Region.
+
+Which solution will meet this requirement with the LEAST development effort?`,
+    options: {
+      A: "Use Amazon S3 to make a copy of the model. Transfer the copy to Account B.",
+      B: "Create a resource-based IAM policy. Use the Amazon Comprehend ImportModel API operation to copy the model to Account B.",
+      C: "Use AWS DataSync to replicate the model from Account A to Account B.",
+      D: "Create an AWS Site-to-Site VPN connection between Account A and Account B to transfer the model."
+    },
+    answer: "B"
+  },
+  {
+    id: 23,
+    topic: 1,
+    stem: `An ML engineer is training a simple neural network model. The ML engineer tracks the performance of the model over time on a validation dataset. The model's performance improves substantially at first and then degrades after a specific number of epochs.
+
+Which solutions will mitigate this problem? (Choose two.)`,
+    options: {
+      A: "Enable early stopping on the model.",
+      B: "Increase dropout in the layers.",
+      C: "Increase the number of layers.",
+      D: "Increase the number of neurons.",
+      E: "Investigate and reduce the sources of model bias."
+    },
+    answer: ["A", "B"]
+  },
+  {
+    id: 24,
+    topic: 1,
+    stem: `A company has a Retrieval Augmented Generation (RAG) application that uses a vector database to store embeddings of documents. The company must migrate the application to AWS and must implement a solution that provides semantic search of text files. The company has already migrated the text repository to an Amazon S3 bucket.
+
+Which solution will meet these requirements?`,
+    options: {
+      A: "Use an AWS Batch job to process the files and generate embeddings. Use AWS Glue to store the embeddings. Use SQL queries to perform the semantic searches.",
+      B: "Use a custom Amazon SageMaker notebook to run a custom script to generate embeddings. Use SageMaker Feature Store to store the embeddings. Use SQL queries to perform the semantic searches.",
+      C: "Use the Amazon Kendra S3 connector to ingest the documents from the S3 bucket into Amazon Kendra. Query Amazon Kendra to perform the semantic searches.",
+      D: "Use an Amazon Textract asynchronous job to ingest the documents from the S3 bucket. Query Amazon Textract to perform the semantic searches."
+    },
+    answer: "C"
+  },
+  {
+    id: 25,
+    topic: 1,
+    stem: `A company uses Amazon Athena to query a dataset in Amazon S3. The dataset has a target variable that the company wants to predict.
+
+The company needs to use the dataset in a solution to determine if a model can predict the target variable.
+
+Which solution will provide this information with the LEAST development effort?`,
+    options: {
+      A: "Create a new model by using Amazon SageMaker Autopilot. Report the model's achieved performance.",
+      B: "Implement custom scripts to perform data pre-processing, multiple linear regression, and performance evaluation. Run the scripts on Amazon EC2 instances.",
+      C: "Configure Amazon Macie to analyze the dataset and to create a model. Report the model's achieved performance.",
+      D: "Select a model from Amazon Bedrock. Tune the model with the data. Report the model's achieved performance."
+    },
+    answer: "A"
+  },
+  {
+    id: 26,
+    topic: 1,
+    stem: `A company wants to predict the success of advertising campaigns by considering the color scheme of each advertisement. An ML engineer is preparing data for a neural network model. The dataset includes color information as categorical data.
+
+Which technique for feature engineering should the ML engineer use for the model?`,
+    options: {
+      A: "Apply label encoding to the color categories. Automatically assign each color a unique integer.",
+      B: "Implement padding to ensure that all color feature vectors have the same length.",
+      C: "Perform dimensionality reduction on the color categories.",
+      D: "One-hot encode the color categories to transform the color scheme feature into a binary matrix."
+    },
+    answer: "D"
+  },
+  {
+    id: 27,
+    topic: 1,
+    stem: `A company uses a hybrid cloud environment. A model that is deployed on premises uses data in Amazon 53 to provide customers with a live conversational engine.
+
+The model is using sensitive data. An ML engineer needs to implement a solution to identify and remove the sensitive data.
+
+Which solution will meet these requirements with the LEAST operational overhead?`,
+    options: {
+      A: "Deploy the model on Amazon SageMaker. Create a set of AWS Lambda functions to identify and remove the sensitive data.",
+      B: "Deploy the model on an Amazon Elastic Container Service (Amazon ECS) cluster that uses AWS Fargate. Create an AWS Batch job to identify and remove the sensitive data.",
+      C: "Use Amazon Macie to identify the sensitive data. Create a set of AWS Lambda functions to remove the sensitive data.",
+      D: "Use Amazon Comprehend to identify the sensitive data. Launch Amazon EC2 instances to remove the sensitive data."
+    },
+    answer: "C"
+  },
+  {
+    id: 28,
+    topic: 1,
+    stem: `An ML engineer needs to create data ingestion pipelines and ML model deployment pipelines on AWS. All the raw data is stored in Amazon S3 buckets.
+
+Which solution will meet these requirements?`,
+    options: {
+      A: "Use Amazon Data Firehose to create the data ingestion pipelines. Use Amazon SageMaker Studio Classic to create the model deployment pipelines.",
+      B: "Use AWS Glue to create the data ingestion pipelines. Use Amazon SageMaker Studio Classic to create the model deployment pipelines.",
+      C: "Use Amazon Redshift ML to create the data ingestion pipelines. Use Amazon SageMaker Studio Classic to create the model deployment pipelines.",
+      D: "Use Amazon Athena to create the data ingestion pipelines. Use an Amazon SageMaker notebook to create the model deployment pipelines."
+    },
+    answer: "B"
+  },
+  {
+    id: 29,
+    topic: 1,
+    stem: `A company that has hundreds of data scientists is using Amazon SageMaker to create ML models. The models are in model groups in the SageMaker Model Registry.
+
+The data scientists are grouped into three categories: computer vision, natural language processing (NLP), and speech recognition. An ML engineer needs to implement a solution to organize the existing models into these groups to improve model discoverability at scale. The solution must not affect the integrity of the model artifacts and their existing groupings.
+
+Which solution will meet these requirements?`,
+    options: {
+      A: "Create a custom tag for each of the three categories. Add the tags to the model packages in the SageMaker Model Registry.",
+      B: "Create a model group for each category. Move the existing models into these category model groups.",
+      C: "Use SageMaker ML Lineage Tracking to automatically identify and tag which model groups should contain the models.",
+      D: "Create a Model Registry collection for each of the three categories. Move the existing model groups into the collections."
+    },
+    answer: "D"
+  },
+  {
+    id: 30,
+    topic: 1,
+    stem: `A company runs an Amazon SageMaker domain in a public subnet of a newly created VPC. The network is configured properly, and ML engineers can access the SageMaker domain.
+
+Recently, the company discovered suspicious traffic to the domain from a specific IP address. The company needs to block traffic from the specific IP address.
+
+Which update to the network configuration will meet this requirement?`,
+    options: {
+      A: "Create a security group inbound rule to deny traffic from the specific IP address. Assign the security group to the domain.",
+      B: "Create a network ACL inbound rule to deny traffic from the specific IP address. Assign the rule to the default network Ad for the subnet where the domain is located.",
+      C: "Create a shadow variant for the domain. Configure SageMaker Inference Recommender to send traffic from the specific IP address to the shadow endpoint.",
+      D: "Create a VPC route table to deny inbound traffic from the specific IP address. Assign the route table to the domain."
+    },
+    answer: "B"
+  },
+  {
+    id: 31,
+    topic: 1,
+    stem: `A company is gathering audio, video, and text data in various languages. The company needs to use a large language model (LLM) to summarize the gathered data that is in Spanish.
+
+Which solution will meet these requirements in the LEAST amount of time?`,
+    options: {
+      A: "Train and deploy a model in Amazon SageMaker to convert the data into English text. Train and deploy an LLM in SageMaker to summarize the text.",
+      B: "Use Amazon Transcribe and Amazon Translate to convert the data into English text. Use Amazon Bedrock with the Jurassic model to summarize the text.",
+      C: "Use Amazon Rekognition and Amazon Translate to convert the data into English text. Use Amazon Bedrock with the Anthropic Claude model to summarize the text.",
+      D: "Use Amazon Comprehend and Amazon Translate to convert the data into English text. Use Amazon Bedrock with the Stable Diffusion model to summarize the text."
+    },
+    answer: "B"
+  },
+  {
+    id: 32,
+    topic: 1,
+    stem: `A financial company receives a high volume of real-time market data streams from an external provider. The streams consist of thousands of JSON records every second.
+
+The company needs to implement a scalable solution on AWS to identify anomalous data points.
+
+Which solution will meet these requirements with the LEAST operational overhead?`,
+    options: {
+      A: "Ingest real-time data into Amazon Kinesis data streams. Use the built-in RANDOM_CUT_FOREST function in Amazon Managed Service for Apache Flink to process the data streams and to detect data anomalies.",
+      B: "Ingest real-time data into Amazon Kinesis data streams. Deploy an Amazon SageMaker endpoint for real- time outlier detection. Create an AWS Lambda function to detect anomalies. Use the data streams to invoke the Lambda function.",
+      C: "Ingest real-time data into Apache Kafka on Amazon EC2 instances. Deploy an Amazon SageMaker endpoint for real-time outlier detection. Create an AWS Lambda function to detect anomalies. Use the data streams to invoke the Lambda function.",
+      D: "Send real-time data to an Amazon Simple Queue Service (Amazon SQS) FIFO queue. Create an AWS Lambda function to consume the queue messages. Program the Lambda function to start an AWS Glue extract, transform, and load (ETL) job for batch processing and anomaly detection."
+    },
+    answer: "A"
+  },
+  {
+    id: 33,
+    topic: 1,
+    stem: `A company has a large collection of chat recordings from customer interactions after a product release. An ML engineer needs to create an ML model to analyze the chat data. The ML engineer needs to determine the success of the product by reviewing customer sentiments about the product.
+
+Which action should the ML engineer take to complete the evaluation in the LEAST amount of time?`,
+    options: {
+      A: "Use Amazon Rekognition to analyze sentiments of the chat conversations.",
+      B: "Train a Naive Bayes classifier to analyze sentiments of the chat conversations.",
+      C: "Use Amazon Comprehend to analyze sentiments of the chat conversations.",
+      D: "Use random forests to classify sentiments of the chat conversations."
+    },
+    answer: "C"
+  },
+  {
+    id: 34,
+    topic: 1,
+    stem: `A company has a conversational AI assistant that sends requests through Amazon Bedrock to an Anthropic Claude large language model (LLM). Users report that when they ask similar questions multiple times, they sometimes receive different answers. An ML engineer needs to improve the responses to be more consistent and less random.
+
+Which solution will meet these requirements?`,
+    options: {
+      A: "Increase the temperature parameter and the top_k parameter.",
+      B: "Increase the temperature parameter. Decrease the top_k parameter.",
+      C: "Decrease the temperature parameter. Increase the top_k parameter.",
+      D: "Decrease the temperature parameter and the top_k parameter."
+    },
+    answer: "D"
+  },
+  {
+    id: 35,
+    topic: 1,
+    stem: `A company is using ML to predict the presence of a specific weed in a farmer's field. The company is using the Amazon SageMaker linear learner built-in algorithm with a value of multiclass_dassifier for the predictorjype hyperparameter.
+
+What should the company do to MINIMIZE false positives?`,
+    options: {
+      A: "Set the value of the weight decay hyperparameter to zero.",
+      B: "Increase the number of training epochs.",
+      C: "Increase the value of the target_precision hyperparameter.",
+      D: "Change the value of the predictorjype hyperparameter to regressor."
+    },
+    answer: "C"
+  },
+  {
+    id: 36,
+    topic: 1,
+    stem: `A company has implemented a data ingestion pipeline for sales transactions from its ecommerce website. The company uses Amazon Data Firehose to ingest data into Amazon OpenSearch Service. The buffer interval of the Firehose stream is set for 60 seconds. An OpenSearch linear model generates real-time sales forecasts based on the data and presents the data in an OpenSearch dashboard.
+
+The company needs to optimize the data ingestion pipeline to support sub-second latency for the real-time dashboard.
+
+Which change to the architecture will meet these requirements?`,
+    options: {
+      A: "Use zero buffering in the Firehose stream. Tune the batch size that is used in the PutRecordBatch operation.",
+      B: "Replace the Firehose stream with an AWS DataSync task. Configure the task with enhanced fan-out consumers.",
+      C: "Increase the buffer interval of the Firehose stream from 60 seconds to 120 seconds.",
+      D: "Replace the Firehose stream with an Amazon Simple Queue Service (Amazon SQS) queue."
+    },
+    answer: "A"
+  },
+  {
+    id: 37,
+    topic: 1,
+    stem: `A company has trained an ML model in Amazon SageMaker. The company needs to host the model to provide inferences in a production environment.
+
+The model must be highly available and must respond with minimum latency. The size of each request will be between 1 KB and 3 MB. The model will receive unpredictable bursts of requests during the day. The inferences must adapt proportionally to the changes in demand.
+
+How should the company deploy the model into production to meet these requirements?`,
+    options: {
+      A: "Create a SageMaker real-time inference endpoint. Configure auto scaling. Configure the endpoint to present the existing model.",
+      B: "Deploy the model on an Amazon Elastic Container Service (Amazon ECS) cluster. Use ECS scheduled scaling that is based on the CPU of the ECS cluster.",
+      C: "Install SageMaker Operator on an Amazon Elastic Kubernetes Service (Amazon EKS) cluster. Deploy the model in Amazon EKS. Set horizontal pod auto scaling to scale replicas based on the memory metric.",
+      D: "Use Spot Instances with a Spot Fleet behind an Application Load Balancer (ALB) for inferences. Use the ALBRequestCountPerTarget metric as the metric for auto scaling."
+    },
+    answer: "A"
+  },
+  {
+    id: 38,
+    topic: 1,
+    stem: `An ML engineer needs to use an Amazon EMR cluster to process large volumes of data in batches. Any data loss is unacceptable.
+
+Which instance purchasing option will meet these requirements MOST cost-effectively?`,
+    options: {
+      A: "Run the primary node, core nodes, and task nodes on On-Demand Instances.",
+      B: "Run the primary node, core nodes, and task nodes on Spot Instances.",
+      C: "Run the primary node on an On-Demand Instance. Run the core nodes and task nodes on Spot Instances.",
+      D: "Run the primary node and core nodes on On-Demand Instances. Run the task nodes on Spot Instances."
+    },
+    answer: "D"
+  },
+  {
+    id: 39,
+    topic: 1,
+    stem: `A company wants to improve the sustainability of its ML operations.
+
+Which actions will reduce the energy usage and computational resources that are associated with the company's training jobs? (Choose two.)`,
+    options: {
+      A: "Use Amazon SageMaker Debugger to stop training jobs when non-converging conditions are detected.",
+      B: "Use Amazon SageMaker Ground Truth for data labeling.",
+      C: "Deploy models by using AWS Lambda functions.",
+      D: "Use AWS Trainium instances for training.",
+      E: "Use PyTorch or TensorFlow with the distributed training option."
+    },
+    answer: ["A", "D"]
+  },
+  {
+    id: 40,
+    topic: 1,
+    stem: `A company is planning to create several ML prediction models. The training data is stored in Amazon S3. The entire dataset is more than 5 TB in size and consists of CSV, JSON, Apache Parquet, and simple text files.
+
+The data must be processed in several consecutive steps. The steps include complex manipulations that can take hours to finish running. Some of the processing involves natural language processing (NLP) transformations. The entire process must be automated.
+
+Which solution will meet these requirements?`,
+    options: {
+      A: "Process data at each step by using Amazon SageMaker Data Wrangler. Automate the process by using Data Wrangler jobs.",
+      B: "Use Amazon SageMaker notebooks for each data processing step. Automate the process by using Amazon EventBridge.",
+      C: "Process data at each step by using AWS Lambda functions. Automate the process by using AWS Step Functions and Amazon EventBridge.",
+      D: "Use Amazon SageMaker Pipelines to create a pipeline of data processing steps. Automate the pipeline by using Amazon EventBridge."
+    },
+    answer: "D"
+  },
+  {
+    id: 41,
+    topic: 1,
+    stem: `An ML engineer needs to use AWS CloudFormation to create an ML model that an Amazon SageMaker endpoint will host.
+
+Which resource should the ML engineer declare in the CloudFormation template to meet this requirement?`,
+    options: {
+      A: "AWS::SageMaker::Model",
+      B: "AWS::SageMaker::Endpoint",
+      C: "AWS::SageMaker::NotebookInstance",
+      D: "AWS::SageMaker::Pipeline"
+    },
+    answer: "A"
+  },
+  {
+    id: 42,
+    topic: 1,
+    stem: `An advertising company uses AWS Lake Formation to manage a data lake. The data lake contains structured data and unstructured data. The company's ML engineers are assigned to specific advertisement campaigns.
+
+The ML engineers must interact with the data through Amazon Athena and by browsing the data directly in an Amazon S3 bucket. The ML engineers must have access to only the resources that are specific to their assigned advertisement campaigns.
+
+Which solution will meet these requirements in the MOST operationally efficient way?`,
+    options: {
+      A: "Configure IAM policies on an AWS Glue Data Catalog to restrict access to Athena based on the ML engineers' campaigns.",
+      B: "Store users and campaign information in an Amazon DynamoDB table. Configure DynamoDB Streams to invoke an AWS Lambda function to update S3 bucket policies.",
+      C: "Use Lake Formation to authorize AWS Glue to access the S3 bucket. Configure Lake Formation tags to map ML engineers to their campaigns.",
+      D: "Configure S3 bucket policies to restrict access to the S3 bucket based on the ML engineers' campaigns."
+    },
+    answer: "C"
+  },
+  {
+    id: 43,
+    topic: 1,
+    stem: `An ML engineer needs to use data with Amazon SageMaker Canvas to train an ML model. The data is stored in Amazon S3 and is complex in structure. The ML engineer must use a file format that minimizes processing time for the data.
+
+Which file format will meet these requirements?`,
+    options: {
+      A: "CSV files compressed with Snappy",
+      B: "JSON objects in JSONL format",
+      C: "JSON files compressed with gzip",
+      D: "Apache Parquet files"
+    },
+    answer: "D"
+  },
+  {
+    id: 44,
+    topic: 1,
+    stem: `An ML engineer is evaluating several ML models and must choose one model to use in production. The cost of false negative predictions by the models is much higher than the cost of false positive predictions.
+
+Which metric finding should the ML engineer prioritize the MOST when choosing the model?`,
+    options: {
+      A: "Low precision",
+      B: "High precision",
+      C: "Low recall",
+      D: "High recall"
+    },
+    answer: "D"
+  },
+  {
+    id: 45,
+    topic: 1,
+    stem: `A company has trained and deployed an ML model by using Amazon SageMaker. The company needs to implement a solution to record and monitor all the API call events for the SageMaker endpoint. The solution also must provide a notification when the number of API call events breaches a threshold.
+
+Which solution will meet these requirements?`,
+    options: {
+      A: "Use SageMaker Debugger to track the inferences and to report metrics. Create a custom rule to provide a notification when the threshold is breached.",
+      B: "Use SageMaker Debugger to track the inferences and to report metrics. Use the tensor_variance built-in rule to provide a notification when the threshold is breached.",
+      C: "Log all the endpoint invocation API events by using AWS CloudTrail. Use an Amazon CloudWatch dashboard for monitoring. Set up a CloudWatch alarm to provide notification when the threshold is breached.",
+      D: "Add the Invocations metric to an Amazon CloudWatch dashboard for monitoring. Set up a CloudWatch alarm to provide notification when the threshold is breached."
+    },
+    answer: "C"
+  },
+  {
+    id: 46,
+    topic: 1,
+    stem: `A company has AWS Glue data processing jobs that are orchestrated by an AWS Glue workflow. The AWS Glue jobs can run on a schedule or can be launched manually.
+
+The company is developing pipelines in Amazon SageMaker Pipelines for ML model development. The pipelines will use the output of the AWS Glue jobs during the data processing phase of model development. An ML engineer needs to implement a solution that integrates the AWS Glue jobs with the pipelines.
+
+Which solution will meet these requirements with the LEAST operational overhead?`,
+    options: {
+      A: "Use AWS Step Functions for orchestration of the pipelines and the AWS Glue jobs.",
+      B: "Use processing steps in SageMaker Pipelines. Configure inputs that point to the Amazon Resource Names (ARNs) of the AWS Glue jobs.",
+      C: "Use Callback steps in SageMaker Pipelines to start the AWS Glue workflow and to stop the pipelines until the AWS Glue jobs finish running.",
+      D: "Use Amazon EventBridge to invoke the pipelines and the AWS Glue jobs in the desired order."
+    },
+    answer: "C"
+  },
+  {
+    id: 47,
+    topic: 1,
+    stem: `A company is using an Amazon Redshift database as its single data source. Some of the data is sensitive.
+
+A data scientist needs to use some of the sensitive data from the database. An ML engineer must give the data scientist access to the data without transforming the source data and without storing anonymized data in the database.
+
+Which solution will meet these requirements with the LEAST implementation effort?`,
+    options: {
+      A: "Configure dynamic data masking policies to control how sensitive data is shared with the data scientist at query time.",
+      B: "Create a materialized view with masking logic on top of the database. Grant the necessary read permissions to the data scientist.",
+      C: "Unload the Amazon Redshift data to Amazon S3. Use Amazon Athena to create schema-on-read with masking logic. Share the view with the data scientist.",
+      D: "Unload the Amazon Redshift data to Amazon S3. Create an AWS Glue job to anonymize the data. Share the dataset with the data scientist."
+    },
+    answer: "A"
+  },
+  {
+    id: 48,
+    topic: 1,
+    stem: `An ML engineer is using a training job to fine-tune a deep learning model in Amazon SageMaker Studio. The ML engineer previously used the same pre-trained model with a similar dataset. The ML engineer expects vanishing gradient, underutilized GPU, and overfitting problems.
+
+The ML engineer needs to implement a solution to detect these issues and to react in predefined ways when the issues occur. The solution also must provide comprehensive real-time metrics during the training.
+
+Which solution will meet these requirements with the LEAST operational overhead?`,
+    options: {
+      A: "Use TensorBoard to monitor the training job. Publish the findings to an Amazon Simple Notification Service (Amazon SNS) topic. Create an AWS Lambda function to consume the findings and to initiate the predefined actions.",
+      B: "Use Amazon CloudWatch default metrics to gain insights about the training job. Use the metrics to invoke an AWS Lambda function to initiate the predefined actions.",
+      C: "Expand the metrics in Amazon CloudWatch to include the gradients in each training step. Use the metrics to invoke an AWS Lambda function to initiate the predefined actions.",
+      D: "Use SageMaker Debugger built-in rules to monitor the training job. Configure the rules to initiate the predefined actions."
+    },
+    answer: "D"
+  },
+  {
+    id: 49,
+    topic: 1,
+    stem: `A credit card company has a fraud detection model in production on an Amazon SageMaker endpoint. The company develops a new version of the model. The company needs to assess the new model's performance by using live data and without affecting production end users.
+
+Which solution will meet these requirements?`,
+    options: {
+      A: "Set up SageMaker Debugger and create a custom rule.",
+      B: "Set up blue/green deployments with all-at-once traffic shifting.",
+      C: "Set up blue/green deployments with canary traffic shifting.",
+      D: "Set up shadow testing with a shadow variant of the new model."
+    },
+    answer: "D"
+  },
+  {
+    id: 50,
+    topic: 1,
+    stem: `A company stores time-series data about user clicks in an Amazon S3 bucket. The raw data consists of millions of rows of user activity every day. ML engineers access the data to develop their ML models.
+
+The ML engineers need to generate daily reports and analyze click trends over the past 3 days by using Amazon Athena. The company must retain the data for 30 days before archiving the data.
+
+Which solution will provide the HIGHEST performance for data retrieval?`,
+    options: {
+      A: "Keep all the time-series data without partitioning in the S3 bucket. Manually move data that is older than 30 days to separate S3 buckets.",
+      B: "Create AWS Lambda functions to copy the time-series data into separate S3 buckets. Apply S3 Lifecycle policies to archive data that is older than 30 days to S3 Glacier Flexible Retrieval.",
+      C: "Organize the time-series data into partitions by date prefix in the S3 bucket. Apply S3 Lifecycle policies to archive partitions that are older than 30 days to S3 Glacier Flexible Retrieval.",
+      D: "Put each day's time-series data into its own S3 bucket. Use S3 Lifecycle policies to archive S3 buckets that hold data that is older than 30 days to S3 Glacier Flexible Retrieval."
+    },
+    answer: "C"
+  },
+  {
+    id: 51,
+    topic: 1,
+    stem: `A company has deployed an ML model that detects fraudulent credit card transactions in real time in a banking application. The model uses Amazon SageMaker Asynchronous Inference. Consumers are reporting delays in receiving the inference results.
+
+An ML engineer needs to implement a solution to improve the inference performance. The solution also must provide a notification when a deviation in model quality occurs.
+
+Which solution will meet these requirements?`,
+    options: {
+      A: "Use SageMaker real-time inference for inference. Use SageMaker Model Monitor for notifications about model quality.",
+      B: "Use SageMaker batch transform for inference. Use SageMaker Model Monitor for notifications about model quality.",
+      C: "Use SageMaker Serverless Inference for inference. Use SageMaker Inference Recommender for notifications about model quality.",
+      D: "Keep using SageMaker Asynchronous Inference for inference. Use SageMaker Inference Recommender for notifications about model quality."
+    },
+    answer: "A"
+  },
+  {
+    id: 52,
+    topic: 1,
+    stem: `An ML engineer needs to implement a solution to host a trained ML model. The rate of requests to the model will be inconsistent throughout the day.
+
+The ML engineer needs a scalable solution that minimizes costs when the model is not in use. The solution also must maintain the model's capacity to respond to requests during times of peak usage.
+
+Which solution will meet these requirements?`,
+    options: {
+      A: "Create AWS Lambda functions that have fixed concurrency to host the model. Configure the Lambda functions to automatically scale based on the number of requests to the model.",
+      B: "Deploy the model on an Amazon Elastic Container Service (Amazon ECS) cluster that uses AWS Fargate. Set a static number of tasks to handle requests during times of peak usage.",
+      C: "Deploy the model to an Amazon SageMaker endpoint. Deploy multiple copies of the model to the endpoint. Create an Application Load Balancer to route traffic between the different copies of the model at the endpoint.",
+      D: "Deploy the model to an Amazon SageMaker endpoint. Create SageMaker endpoint auto scaling policies that are based on Amazon CloudWatch metrics to adjust the number of instances dynamically."
+    },
+    answer: "D"
+  },
+  {
+    id: 53,
+    topic: 1,
+    stem: `A company uses Amazon SageMaker Studio to develop an ML model. The company has a single SageMaker Studio domain. An ML engineer needs to implement a solution that provides an automated alert when SageMaker compute costs reach a specific threshold.
+
+Which solution will meet these requirements?`,
+    options: {
+      A: "Add resource tagging by editing the SageMaker user profile in the SageMaker domain. Configure AWS Cost Explorer to send an alert when the threshold is reached.",
+      B: "Add resource tagging by editing the SageMaker user profile in the SageMaker domain. Configure AWS Budgets to send an alert when the threshold is reached.",
+      C: "Add resource tagging by editing each user's IAM profile. Configure AWS Cost Explorer to send an alert when the threshold is reached.",
+      D: "Add resource tagging by editing each user's IAM profile. Configure AWS Budgets to send an alert when the threshold is reached."
+    },
+    answer: "B"
+  },
+  {
+    id: 54,
+    topic: 1,
+    stem: `A company uses Amazon SageMaker for its ML workloads. The company's ML engineer receives a 50 MB Apache Parquet data file to build a fraud detection model. The file includes several correlated columns that are not required.
+
+What should the ML engineer do to drop the unnecessary columns in the file with the LEAST effort?`,
+    options: {
+      A: "Download the file to a local workstation. Perform one-hot encoding by using a custom Python script.",
+      B: "Create an Apache Spark job that uses a custom processing script on Amazon EMR.",
+      C: "Create a SageMaker processing job by calling the SageMaker Python SDK.",
+      D: "Create a data flow in SageMaker Data Wrangler. Configure a transform step."
+    },
+    answer: "D"
+  },
+  {
+    id: 55,
+    topic: 1,
+    stem: `A company is creating an application that will recommend products for customers to purchase. The application will make API calls to Amazon Q Business. The company must ensure that responses from Amazon Q Business do not include the name of the company's main competitor.
+
+Which solution will meet this requirement?`,
+    options: {
+      A: "Configure the competitor's name as a blocked phrase in Amazon Q Business.",
+      B: "Configure an Amazon Q Business retriever to exclude the competitor's name.",
+      C: "Configure an Amazon Kendra retriever for Amazon Q Business to build indexes that exclude the competitor's name.",
+      D: "Configure document attribute boosting in Amazon Q Business to deprioritize the competitor's name."
+    },
+    answer: "A"
+  },
+  {
+    id: 56,
+    topic: 1,
+    stem: `An ML engineer needs to use Amazon SageMaker to fine-tune a large language model (LLM) for text summarization.
+
+The ML engineer must follow a low-code no-code (LCNC) approach.
+
+Which solution will meet these requirements?`,
+    options: {
+      A: "Use SageMaker Studio to fine-tune an LLM that is deployed on Amazon EC2 instances.",
+      B: "Use SageMaker Autopilot to fine-tune an LLM that is deployed by a custom API endpoint.",
+      C: "Use SageMaker Autopilot to fine-tune an LLM that is deployed on Amazon EC2 instances.",
+      D: "Use SageMaker Autopilot to fine-tune an LLM that is deployed by SageMaker JumpStart."
+    },
+    answer: "D"
+  },
+  {
+    id: 57,
+    topic: 1,
+    stem: `A company has an ML model that needs to run one time each night to predict stock values. The model input is 3 MB of data that is collected during the current day. The model produces the predictions for the next day. The prediction process takes less than 1 minute to finish running.
+
+How should the company deploy the model on Amazon SageMaker to meet these requirements?`,
+    options: {
+      A: "Use a multi-model serverless endpoint. Enable caching.",
+      B: "Use an asynchronous inference endpoint. Set the InitialInstanceCount parameter to 0.",
+      C: "Use a real-time endpoint. Configure an auto scaling policy to scale the model to 0 when the model is not in use.",
+      D: "Use a serverless inference endpoint. Set the MaxConcurrency parameter to 1."
+    },
+    answer: "D"
+  },
+  {
+    id: 58,
+    topic: 1,
+    stem: `An ML engineer trained an ML model on Amazon SageMaker to detect automobile accidents from dosed-circuit TV footage. The ML engineer used SageMaker Data Wrangler to create a training dataset of images of accidents and non-accidents.
+
+The model performed well during training and validation. However, the model is underperforming in production because of variations in the quality of the images from various cameras.
+
+Which solution will improve the model's accuracy in the LEAST amount of time?`,
+    options: {
+      A: "Collect more images from all the cameras. Use Data Wrangler to prepare a new training dataset.",
+      B: "Recreate the training dataset by using the Data Wrangler corrupt image transform. Specify the impulse noise option.",
+      C: "Recreate the training dataset by using the Data Wrangler enhance image contrast transform. Specify the Gamma contrast option.",
+      D: "Recreate the training dataset by using the Data Wrangler resize image transform. Crop all images to the same size."
+    },
+    answer: "B"
+  },
+  {
+    id: 59,
+    topic: 1,
+    stem: `A company has an application that uses different APIs to generate embeddings for input text. The company needs to implement a solution to automatically rotate the API tokens every 3 months.
+
+Which solution will meet this requirement?`,
+    options: {
+      A: "Store the tokens in AWS Secrets Manager. Create an AWS Lambda function to perform the rotation.",
+      B: "Store the tokens in AWS Systems Manager Parameter Store. Create an AWS Lambda function to perform the rotation.",
+      C: "Store the tokens in AWS Key Management Service (AWS KMS). Use an AWS managed key to perform the rotation.",
+      D: "Store the tokens in AWS Key Management Service (AWS KMS). Use an AWS owned key to perform the rotation."
+    },
+    answer: "A"
+  },
+  {
+    id: 60,
+    topic: 1,
+    stem: `An ML engineer receives datasets that contain missing values, duplicates, and extreme outliers. The ML engineer must consolidate these datasets into a single data frame and must prepare the data for ML.
+
+Which solution will meet these requirements?`,
+    options: {
+      A: "Use Amazon SageMaker Data Wrangler to import the datasets and to consolidate them into a single data frame. Use the cleansing and enrichment functionalities to prepare the data.",
+      B: "Use Amazon SageMaker Ground Truth to import the datasets and to consolidate them into a single data frame. Use the human-in-the-loop capability to prepare the data.",
+      C: "Manually import and merge the datasets. Consolidate the datasets into a single data frame. Use Amazon Q Developer to generate code snippets that will prepare the data.",
+      D: "Manually import and merge the datasets. Consolidate the datasets into a single data frame. Use Amazon SageMaker data labeling to prepare the data."
+    },
+    answer: "A"
+  },
+  {
+    id: 61,
+    topic: 1,
+    stem: `A company has historical data that shows whether customers needed long-term support from company staff. The company needs to develop an ML model to predict whether new customers will require long-term support.
+
+Which modeling approach should the company use to meet this requirement?`,
+    options: {
+      A: "Anomaly detection",
+      B: "Linear regression",
+      C: "Logistic regression",
+      D: "Semantic segmentation"
+    },
+    answer: "C"
+  },
+  {
+    id: 62,
+    topic: 1,
+    stem: `An ML engineer has developed a binary classification model outside of Amazon SageMaker. The ML engineer needs to make the model accessible to a SageMaker Canvas user for additional tuning.
+
+The model artifacts are stored in an Amazon S3 bucket. The ML engineer and the Canvas user are part of the same SageMaker domain.
+
+Which combination of requirements must be met so that the ML engineer can share the model with the Canvas user? (Choose two.)`,
+    options: {
+      A: "The ML engineer and the Canvas user must be in separate SageMaker domains.",
+      B: "The Canvas user must have permissions to access the S3 bucket where the model artifacts are stored.",
+      C: "The model must be registered in the SageMaker Model Registry.",
+      D: "The ML engineer must host the model on AWS Marketplace.",
+      E: "The ML engineer must deploy the model to a SageMaker endpoint."
+    },
+    answer: ["B", "C"]
+  },
+  {
+    id: 63,
+    topic: 1,
+    stem: `A company is building a deep learning model on Amazon SageMaker. The company uses a large amount of data as the training dataset. The company needs to optimize the model's hyperparameters to minimize the loss function on the validation dataset.
+
+Which hyperparameter tuning strategy will accomplish this goal with the LEAST computation time?`,
+    options: {
+      A: "Hyperband",
+      B: "Grid search",
+      C: "Bayesian optimization",
+      D: "Random search"
+    },
+    answer: "A"
+  },
+  {
+    id: 64,
+    topic: 1,
+    stem: `A company is planning to use Amazon Redshift ML in its primary AWS account. The source data is in an Amazon S3 bucket in a secondary account.
+
+An ML engineer needs to set up an ML pipeline in the primary account to access the S3 bucket in the secondary account. The solution must not require public IPv4 addresses.
+
+Which solution will meet these requirements?`,
+    options: {
+      A: "Provision a Redshift cluster and Amazon SageMaker Studio in a VPC with no public access enabled in the primary account. Create a VPC peering connection between the accounts. Update the VPC route tables to remove the route to 0.0.0.0/0.",
+      B: "Provision a Redshift cluster and Amazon SageMaker Studio in a VPC with no public access enabled in the primary account. Create an AWS Direct Connect connection and a transit gateway. Associate the VPCs from both accounts with the transit gateway. Update the VPC route tables to remove the route to 0.0.0.0/0.",
+      C: "Provision a Redshift cluster and Amazon SageMaker Studio in a VPC in the primary account. Create an AWS Site-to-Site VPN connection with two encrypted IPsec tunnels between the accounts. Set up interface VPC endpoints for Amazon S3.",
+      D: "Provision a Redshift cluster and Amazon SageMaker Studio in a VPC in the primary account. Create an S3 gateway endpoint. Update the S3 bucket policy to allow IAM principals from the primary account. Set up interface VPC endpoints for SageMaker and Amazon Redshift."
+    },
+    answer: "D"
+  },
+  {
+    id: 65,
+    topic: 1,
+    stem: `A company is using an AWS Lambda function to monitor the metrics from an ML model. An ML engineer needs to implement a solution to send an email message when the metrics breach a threshold.
+
+Which solution will meet this requirement?`,
+    options: {
+      A: "Log the metrics from the Lambda function to AWS CloudTrail. Configure a CloudTrail trail to send the email message.",
+      B: "Log the metrics from the Lambda function to Amazon CloudFront. Configure an Amazon CloudWatch alarm to send the email message.",
+      C: "Log the metrics from the Lambda function to Amazon CloudWatch. Configure a CloudWatch alarm to send the email message.",
+      D: "Log the metrics from the Lambda function to Amazon CloudWatch. Configure an Amazon CloudFront rule to send the email message."
+    },
+    answer: "C"
+  },
+  {
+    id: 66,
+    topic: 1,
+    stem: `A company has used Amazon SageMaker to deploy a predictive ML model in production. The company is using SageMaker Model Monitor on the model. After a model update, an ML engineer notices data quality issues in the Model Monitor checks.
+
+What should the ML engineer do to mitigate the data quality issues that Model Monitor has identified?`,
+    options: {
+      A: "Adjust the model's parameters and hyperparameters.",
+      B: "Initiate a manual Model Monitor job that uses the most recent production data.",
+      C: "Create a new baseline from the latest dataset. Update Model Monitor to use the new baseline for evaluations.",
+      D: "Include additional data in the existing training set for the model. Retrain and redeploy the model."
+    },
+    answer: "C"
+  },
+  {
+    id: 67,
+    topic: 1,
+    stem: `A company has an ML model that generates text descriptions based on images that customers upload to the company's website. The images can be up to 50 MB in total size.
+
+An ML engineer decides to store the images in an Amazon S3 bucket. The ML engineer must implement a processing solution that can scale to accommodate changes in demand.
+
+Which solution will meet these requirements with the LEAST operational overhead?`,
+    options: {
+      A: "Create an Amazon SageMaker batch transform job to process all the images in the S3 bucket.",
+      B: "Create an Amazon SageMaker Asynchronous Inference endpoint and a scaling policy. Run a script to make an inference request for each image.",
+      C: "Create an Amazon Elastic Kubernetes Service (Amazon EKS) cluster that uses Karpenter for auto scaling. Host the model on the EKS cluster. Run a script to make an inference request for each image.",
+      D: "Create an AWS Batch job that uses an Amazon Elastic Container Service (Amazon ECS) cluster. Specify a list of images to process for each AWS Batch job."
+    },
+    answer: "B"
+  },
+  {
+    id: 68,
+    topic: 1,
+    stem: `An ML engineer needs to use AWS services to identify and extract meaningful unique keywords from documents.
+
+Which solution will meet these requirements with the LEAST operational overhead?`,
+    options: {
+      A: "Use the Natural Language Toolkit (NLTK) library on Amazon EC2 instances for text pre-processing. Use the Latent Dirichlet Allocation (LDA) algorithm to identify and extract relevant keywords.",
+      B: "Use Amazon SageMaker and the BlazingText algorithm. Apply custom pre-processing steps for stemming and removal of stop words. Calculate term frequency-inverse document frequency (TF-IDF) scores to identify and extract relevant keywords.",
+      C: "Store the documents in an Amazon S3 bucket. Create AWS Lambda functions to process the documents and to run Python scripts for stemming and removal of stop words. Use bigram and trigram techniques to identify and extract relevant keywords.",
+      D: "Use Amazon Comprehend custom entity recognition and key phrase extraction to identify and extract relevant keywords."
+    },
+    answer: "D"
+  },
+  {
+    id: 69,
+    topic: 1,
+    stem: `A company needs to give its ML engineers appropriate access to training data. The ML engineers must access training data from only their own business group. The ML engineers must not be allowed to access training data from other business groups.
+
+The company uses a single AWS account and stores all the training data in Amazon S3 buckets. All ML model training occurs in Amazon SageMaker.
+
+Which solution will provide the ML engineers with the appropriate access?`,
+    options: {
+      A: "Enable S3 bucket versioning.",
+      B: "Configure S3 Object Lock settings for each user.",
+      C: "Add cross-origin resource sharing (CORS) policies to the S3 buckets.",
+      D: "Create IAM policies. Attach the policies to IAM users or IAM roles."
+    },
+    answer: "D"
+  },
+  {
+    id: 70,
+    topic: 1,
+    stem: `A company needs to host a custom ML model to perform forecast analysis. The forecast analysis will occur with predictable and sustained load during the same 2-hour period every day.
+
+Multiple invocations during the analysis period will require quick responses. The company needs AWS to manage the underlying infrastructure and any auto scaling activities.
+
+Which solution will meet these requirements?`,
+    options: {
+      A: "Schedule an Amazon SageMaker batch transform job by using AWS Lambda.",
+      B: "Configure an Auto Scaling group of Amazon EC2 instances to use scheduled scaling.",
+      C: "Use Amazon SageMaker Serverless Inference with provisioned concurrency.",
+      D: "Run the model on an Amazon Elastic Kubernetes Service (Amazon EKS) cluster on Amazon EC2 with pod auto scaling."
+    },
+    answer: "C"
+  },
+  {
+    id: 71,
+    topic: 1,
+    stem: `A company's ML engineer has deployed an ML model for sentiment analysis to an Amazon SageMaker endpoint. The ML engineer needs to explain to company stakeholders how the model makes predictions.
+
+Which solution will provide an explanation for the model's predictions?`,
+    options: {
+      A: "Use SageMaker Model Monitor on the deployed model.",
+      B: "Use SageMaker Clarify on the deployed model.",
+      C: "Show the distribution of inferences from A/B testing in Amazon CloudWatch.",
+      D: "Add a shadow endpoint. Analyze prediction differences on samples."
+    },
+    answer: "B"
+  },
+  {
+    id: 72,
+    topic: 1,
+    stem: `An ML engineer is using Amazon SageMaker to train a deep learning model that requires distributed training. After some training attempts, the ML engineer observes that the instances are not performing as expected. The ML engineer identifies communication overhead between the training instances.
+
+What should the ML engineer do to MINIMIZE the communication overhead between the instances?`,
+    options: {
+      A: "Place the instances in the same VPC subnet. Store the data in a different AWS Region from where the instances are deployed.",
+      B: "Place the instances in the same VPC subnet but in different Availability Zones. Store the data in a different AWS Region from where the instances are deployed.",
+      C: "Place the instances in the same VPC subnet. Store the data in the same AWS Region and Availability Zone where the instances are deployed.",
+      D: "Place the instances in the same VPC subnet. Store the data in the same AWS Region but in a different Availability Zone from where the instances are deployed."
+    },
+    answer: "C"
+  },
+  {
+    id: 73,
+    topic: 1,
+    stem: `A company is running ML models on premises by using custom Python scripts and proprietary datasets. The company is using PyTorch. The model building requires unique domain knowledge. The company needs to move the models to AWS.
+
+Which solution will meet these requirements with the LEAST effort?`,
+    options: {
+      A: "Use SageMaker built-in algorithms to train the proprietary datasets.",
+      B: "Use SageMaker script mode and premade images for ML frameworks.",
+      C: "Build a container on AWS that includes custom packages and a choice of ML frameworks.",
+      D: "Purchase similar production models through AWS Marketplace."
+    },
+    answer: "B"
+  },
+  {
+    id: 74,
+    topic: 1,
+    stem: `A company is using Amazon SageMaker and millions of files to train an ML model. Each file is several megabytes in size. The files are stored in an Amazon S3 bucket. The company needs to improve training performance.
+
+Which solution will meet these requirements in the LEAST amount of time?`,
+    options: {
+      A: "Transfer the data to a new S3 bucket that provides S3 Express One Zone storage. Adjust the training job to use the new S3 bucket.",
+      B: "Create an Amazon FSx for Lustre file system. Link the file system to the existing S3 bucket. Adjust the training job to read from the file system.",
+      C: "Create an Amazon Elastic File System (Amazon EFS) file system. Transfer the existing data to the file system. Adjust the training job to read from the file system.",
+      D: "Create an Amazon ElastiCache (Redis OSS) cluster. Link the Redis OSS cluster to the existing S3 bucket. Stream the data from the Redis OSS cluster directly to the training job."
+    },
+    answer: "B"
+  },
+  {
+    id: 75,
+    topic: 1,
+    stem: `A company wants to develop an ML model by using tabular data from its customers. The data contains meaningful ordered features with sensitive information that should not be discarded. An ML engineer must ensure that the sensitive data is masked before another team starts to build the model.
+
+Which solution will meet these requirements?`,
+    options: {
+      A: "Use Amazon Made to categorize the sensitive data.",
+      B: "Prepare the data by using AWS Glue DataBrew.",
+      C: "Run an AWS Batch job to change the sensitive data to random values.",
+      D: "Run an Amazon EMR job to change the sensitive data to random values."
+    },
+    answer: "B"
+  },
+  {
+    id: 76,
+    topic: 1,
+    stem: `An ML engineer needs to deploy ML models to get inferences from large datasets in an asynchronous manner. The ML engineer also needs to implement scheduled monitoring of the data quality of the models. The ML engineer must receive alerts when changes in data quality occur.
+
+Which solution will meet these requirements?`,
+    options: {
+      A: "Deploy the models by using scheduled AWS Glue jobs. Use Amazon CloudWatch alarms to monitor the data quality and to send alerts.",
+      B: "Deploy the models by using scheduled AWS Batch jobs. Use AWS CloudTrail to monitor the data quality and to send alerts.",
+      C: "Deploy the models by using Amazon Elastic Container Service (Amazon ECS) on AWS Fargate. Use Amazon EventBridge to monitor the data quality and to send alerts.",
+      D: "Deploy the models by using Amazon SageMaker batch transform. Use SageMaker Model Monitor to monitor the data quality and to send alerts."
+    },
+    answer: "D"
+  },
+  {
+    id: 77,
+    topic: 1,
+    stem: `An ML engineer normalized training data by using min-max normalization in AWS Glue DataBrew. The ML engineer must normalize the production inference data in the same way as the training data before passing the production inference data to the model for predictions.
+
+Which solution will meet this requirement?`,
+    options: {
+      A: "Apply statistics from a well-known dataset to normalize the production samples.",
+      B: "Keep the min-max normalization statistics from the training set. Use these values to normalize the production samples.",
+      C: "Calculate a new set of min-max normalization statistics from a batch of production samples. Use these values to normalize all the production samples.",
+      D: "Calculate a new set of min-max normalization statistics from each production sample. Use these values to normalize all the production samples."
+    },
+    answer: "B"
+  },
+  {
+    id: 78,
+    topic: 1,
+    stem: `A company is planning to use Amazon SageMaker to make classification ratings that are based on images. The company has 6 TB of training data that is stored on an Amazon FSx for NetApp ONTAP system virtual machine (SVM).
+
+The SVM is in the same VPC as SageMaker.
+
+An ML engineer must make the training data accessible for ML models that are in the SageMaker environment.
+
+Which solution will meet these requirements?`,
+    options: {
+      A: "Mount the FSx for ONTAP file system as a volume to the SageMaker Instance.",
+      B: "Create an Amazon S3 bucket. Use Mountpoint for Amazon S3 to link the S3 bucket to the FSx for ONTAP file system.",
+      C: "Create a catalog connection from SageMaker Data Wrangler to the FSx for ONTAP file system.",
+      D: "Create a direct connection from SageMaker Data Wrangler to the FSx for ONTAP file system."
+    },
+    answer: "A"
+  },
+  {
+    id: 79,
+    topic: 1,
+    stem: `A company regularly receives new training data from the vendor of an ML model. The vendor delivers cleaned and prepared data to the company's Amazon S3 bucket every 3-4 days.
+
+The company has an Amazon SageMaker pipeline to retrain the model. An ML engineer needs to implement a solution to run the pipeline when new data is uploaded to the S3 bucket.
+
+Which solution will meet these requirements with the LEAST operational effort?`,
+    options: {
+      A: "Create an S3 Lifecycle rule to transfer the data to the SageMaker training instance and to initiate training.",
+      B: "Create an AWS Lambda function that scans the S3 bucket. Program the Lambda function to initiate the pipeline when new data is uploaded.",
+      C: "Create an Amazon EventBridge rule that has an event pattern that matches the S3 upload. Configure the pipeline as the target of the rule.",
+      D: "Use Amazon Managed Workflows for Apache Airflow (Amazon MWAA) to orchestrate the pipeline when new data is uploaded."
+    },
+    answer: "C"
+  },
+  {
+    id: 80,
+    topic: 1,
+    stem: `An ML engineer is developing a fraud detection model by using the Amazon SageMaker XGBoost algorithm. The model classifies transactions as either fraudulent or legitimate.
+
+During testing, the model excels at identifying fraud in the training dataset. However, the model is inefficient at identifying fraud in new and unseen transactions.
+
+What should the ML engineer do to improve the fraud detection for new transactions?`,
+    options: {
+      A: "Increase the learning rate.",
+      B: "Remove some irrelevant features from the training dataset.",
+      C: "Increase the value of the max_depth hyperparameter.",
+      D: "Decrease the value of the max_depth hyperparameter."
+    },
+    answer: "D"
+  },
+  {
+    id: 81,
+    topic: 1,
+    stem: `A company has a binary classification model in production. An ML engineer needs to develop a new version of the model.
+
+The new model version must maximize correct predictions of positive labels and negative labels. The ML engineer must use a metric to recalibrate the model to meet these requirements.
+
+Which metric should the ML engineer use for the model recalibration?`,
+    options: {
+      A: "Accuracy",
+      B: "Precision",
+      C: "Recall",
+      D: "Specificity"
+    },
+    answer: "A"
+  },
+  {
+    id: 82,
+    topic: 1,
+    stem: `A company is using Amazon SageMaker to create ML models. The company's data scientists need fine-grained control of the ML workflows that they orchestrate. The data scientists also need the ability to visualize SageMaker jobs and workflows as a directed acyclic graph (DAG). The data scientists must keep a running history of model discovery experiments and must establish model governance for auditing and compliance verifications.
+
+Which solution will meet these requirements?`,
+    options: {
+      A: "Use AWS CodePipeline and its integration with SageMaker Studio to manage the entire ML workflows. Use SageMaker ML Lineage Tracking for the running history of experiments and for auditing and compliance verifications.",
+      B: "Use AWS CodePipeline and its integration with SageMaker Experiments to manage the entire ML workflows. Use SageMaker Experiments for the running history of experiments and for auditing and compliance verifications.",
+      C: "Use SageMaker Pipelines and its integration with SageMaker Studio to manage the entire ML workflows. Use SageMaker ML Lineage Tracking for the running history of experiments and for auditing and compliance verifications.",
+      D: "Use SageMaker Pipelines and its integration with SageMaker Experiments to manage the entire ML workflows. Use SageMaker Experiments for the running history of experiments and for auditing and compliance verifications."
+    },
+    answer: "C"
+  },
+  {
+    id: 83,
+    topic: 1,
+    stem: `A company wants to reduce the cost of its containerized ML applications. The applications use ML models that run on Amazon EC2 instances, AWS Lambda functions, and an Amazon Elastic Container Service (Amazon ECS) cluster.
+
+The EC2 workloads and ECS workloads use Amazon Elastic Block Store (Amazon EBS) volumes to save predictions and artifacts.
+
+An ML engineer must identify resources that are being used inefficiently. The ML engineer also must generate recommendations to reduce the cost of these resources.
+
+Which solution will meet these requirements with the LEAST development effort?`,
+    options: {
+      A: "Create code to evaluate each instance's memory and compute usage.",
+      B: "Add cost allocation tags to the resources. Activate the tags in AWS Billing and Cost Management.",
+      C: "Check AWS CloudTrail event history for the creation of the resources.",
+      D: "Run AWS Compute Optimizer."
+    },
+    answer: "D"
+  },
+  {
+    id: 84,
+    topic: 1,
+    stem: `A company needs to create a central catalog for all the company's ML models. The models are in AWS accounts where the company developed the models initially. The models are hosted in Amazon Elastic Container Registry (Amazon ECR) repositories.
+
+Which solution will meet these requirements?`,
+    options: {
+      A: "Configure ECR cross-account replication for each existing ECR repository. Ensure that each model is visible in each AWS account.",
+      B: "Create a new AWS account with a new ECR repository as the central catalog. Configure ECR cross-account replication between the initial ECR repositories and the central catalog.",
+      C: "Use the Amazon SageMaker Model Registry to create a model group for models hosted in Amazon ECR. Create a new AWS account. In the new account, use the SageMaker Model Registry as the central catalog. Attach a cross-account resource policy to each model group in the initial AWS accounts.",
+      D: "Use an AWS Glue Data Catalog to store the models. Run an AWS Glue crawler to migrate the models from the ECR repositories to the Data Catalog. Configure cross-account access to the Data Catalog."
+    },
+    answer: "C"
+  },
+  {
+    id: 85,
+    topic: 1,
+    stem: `A company has developed a new ML model. The company requires online model validation on 10% of the traffic before the company fully releases the model in production. The company uses an Amazon SageMaker endpoint behind an Application Load Balancer (ALB) to serve the model.
+
+Which solution will set up the required online validation with the LEAST operational overhead?`,
+    options: {
+      A: "Use production variants to add the new model to the existing SageMaker endpoint. Set the variant weight to 0.1 for the new model. Monitor the number of invocations by using Amazon CloudWatch.",
+      B: "Use production variants to add the new model to the existing SageMaker endpoint. Set the variant weight to 1 for the new model. Monitor the number of invocations by using Amazon CloudWatch.",
+      C: "Create a new SageMaker endpoint. Use production variants to add the new model to the new endpoint. Monitor the number of invocations by using Amazon CloudWatch.",
+      D: "Configure the ALB to route 10% of the traffic to the new model at the existing SageMaker endpoint. Monitor the number of invocations by using AWS CloudTrail."
+    },
+    answer: "A"
+  },
+  {
+    id: 86,
+    topic: 1,
+    stem: `A company needs to develop an ML model. The model must identify an item in an image and must provide the location of the item.
+
+Which Amazon SageMaker algorithm will meet these requirements?`,
+    options: {
+      A: "Image classification",
+      B: "XGBoost",
+      C: "Object detection",
+      D: "K-nearest neighbors (k-NN)"
+    },
+    answer: "C"
+  },
+  {
+    id: 87,
+    topic: 1,
+    stem: `A company has an Amazon S3 bucket that contains 1 TB of files from different sources. The S3 bucket contains the following file types in the same S3 folder: CSV, JSON, XLSX, and Apache Parquet.
+
+An ML engineer must implement a solution that uses AWS Glue DataBrew to process the data. The ML engineer also must store the final output in Amazon S3 so that AWS Glue can consume the output in the future.
+
+Which solution will meet these requirements?`,
+    options: {
+      A: "Use DataBrew to process the existing S3 folder. Store the output in Apache Parquet format.",
+      B: "Use DataBrew to process the existing S3 folder. Store the output in AWS Glue Parquet format.",
+      C: "Separate the data into a different folder for each file type. Use DataBrew to process each folder individually. Store the output in Apache Parquet format.",
+      D: "Separate the data into a different folder for each file type. Use DataBrew to process each folder individually. Store the output in AWS Glue Parquet format."
+    },
+    answer: "C"
+  },
+  {
+    id: 88,
+    topic: 1,
+    stem: `A manufacturing company uses an ML model to determine whether products meet a standard for quality. The model produces an output of "Passed" or "Failed." Robots separate the products into the two categories by using the model to analyze photos on the assembly line.
+
+Which metrics should the company use to evaluate the model's performance? (Choose two.)`,
+    options: {
+      A: "Precision and recall",
+      B: "Root mean square error (RMSE) and mean absolute percentage error (MAPE)",
+      C: "Accuracy and F1 score",
+      D: "Bilingual Evaluation Understudy (BLEU) score",
+      E: "Perplexity"
+    },
+    answer: "C"
+  },
+  {
+    id: 89,
+    topic: 1,
+    stem: `An ML engineer needs to encrypt all data in transit when an ML training job runs. The ML engineer must ensure that encryption in transit is applied to processes that Amazon SageMaker uses during the training job.
+
+Which solution will meet these requirements?`,
+    options: {
+      A: "Encrypt communication between nodes for batch processing.",
+      B: "Encrypt communication between nodes in a training cluster.",
+      C: "Specify an AWS Key Management Service (AWS KMS) key during creation of the training job request.",
+      D: "Specify an AWS Key Management Service (AWS KMS) key during creation of the SageMaker domain."
+    },
+    answer: "B"
+  },
+  {
+    id: 90,
+    topic: 1,
+    stem: `An ML engineer needs to use metrics to assess the quality of a time-series forecasting model.
+
+Which metrics apply to this model? (Choose two.)`,
+    options: {
+      A: "Recall",
+      B: "LogLoss",
+      C: "Root mean square error (RMSE)",
+      D: "InferenceLatency",
+      E: "Average weighted quantile loss (wQL)"
+    },
+    answer: ["C", "E"]
+  },
+  {
+    id: 91,
+    topic: 1,
+    stem: `A company runs Amazon SageMaker ML models that use accelerated instances. The models require real-time responses. Each model has different scaling requirements. The company must not allow a cold start for the models.
+
+Which solution will meet these requirements?`,
+    options: {
+      A: "Create a SageMaker Serverless Inference endpoint for each model. Use provisioned concurrency for the endpoints.",
+      B: "Create a SageMaker Asynchronous Inference endpoint for each model. Create an auto scaling policy for each endpoint.",
+      C: "Create a SageMaker endpoint. Create an inference component for each model. In the inference component settings, specify the newly created endpoint. Create an auto scaling policy for each inference component. Set the parameter for the minimum number of copies to at least 1.",
+      D: "Create an Amazon S3 bucket. Store all the model artifacts in the S3 bucket. Create a SageMaker multi- model endpoint. Point the endpoint to the S3 bucket. Create an auto scaling policy for the endpoint. Set the parameter for the minimum number of copies to at least 1."
+    },
+    answer: "C"
+  },
+  {
+    id: 92,
+    topic: 1,
+    stem: `A company uses Amazon SageMaker for its ML process. A compliance audit discovers that an Amazon S3 bucket for training data uses server-side encryption with S3 managed keys (SSE-S3).
+
+The company requires customer managed keys. An ML engineer changes the S3 bucket to use server-side encryption with AWS KMS keys (SSE-KMS). The ML engineer makes no other configuration changes.
+
+After the change to the encryption settings, SageMaker training jobs start to fail with AccessDenied errors.
+
+What should the ML engineer do to resolve this problem?`,
+    options: {
+      A: "Update the IAM policy that is attached to the execution role for the training jobs. Include the s3:ListBucket and s3:GetObject permissions.",
+      B: "Update the S3 bucket policy that is attached to the S3 bucket. Set the value of the aws:SecureTransport condition key to True.",
+      C: "Update the IAM policy that is attached to the execution role for the training jobs. Include the kms:Encrypt and kms:Decrypt permissions.",
+      D: "Update the IAM policy that is attached to the user that created the training jobs. Include the kms:CreateGrant permission."
+    },
+    answer: "C"
+  },
+  {
+    id: 93,
+    topic: 1,
+    stem: `A company runs training jobs on Amazon SageMaker by using a compute optimized instance. Demand for training runs will remain constant for the next 55 weeks. The instance needs to run for 35 hours each week. The company needs to reduce its model training costs.
+
+Which solution will meet these requirements?`,
+    options: {
+      A: "Use a serverless endpoint with a provisioned concurrency of 35 hours for each week. Run the training on the endpoint.",
+      B: "Use SageMaker Edge Manager for the training. Specify the instance requirement in the edge device configuration. Run the training.",
+      C: "Use the heterogeneous cluster feature of SageMaker Training. Configure the instance_type, instance_count, and instance_groups arguments to run training jobs.",
+      D: "Opt in to a SageMaker Savings Plan with a 1-year term and an All Upfront payment. Run a SageMaker Training job on the instance."
+    },
+    answer: "D"
+  },
+  {
+    id: 95,
+    topic: 1,
+    stem: `A company deployed an ML model that uses the XGBoost algorithm to predict product failures. The model is hosted on an Amazon SageMaker endpoint and is trained on normal operating data. An AWS Lambda function provides the predictions to the company's application.
+
+An ML engineer must implement a solution that uses incoming live data to detect decreased model accuracy over time.
+
+Which solution will meet these requirements?`,
+    options: {
+      A: "Use Amazon CloudWatch to create a dashboard that monitors real-time inference data and model predictions. Use the dashboard to detect drift.",
+      B: "Modify the Lambda function to calculate model drift by using real-time inference data and model predictions. Program the Lambda function to send alerts.",
+      C: "Schedule a monitoring job in SageMaker Model Monitor. Use the job to detect drift by analyzing the live data against a baseline of the training data statistics and constraints.",
+      D: "Schedule a monitoring job in SageMaker Debugger. Use the job to detect drift by analyzing the live data against a baseline of the training data statistics and constraints."
+    },
+    answer: "C"
+  },
+  {
+    id: 96,
+    topic: 1,
+    stem: `A company has an ML model that uses historical transaction data to predict customer behavior. An ML engineer is optimizing the model in Amazon SageMaker to enhance the model's predictive accuracy. The ML engineer must examine the input data and the resulting predictions to identify trends that could skew the model's performance across different demographics.
+
+Which solution will provide this level of analysis?`,
+    options: {
+      A: "Use Amazon CloudWatch to monitor network metrics and CPU metrics for resource optimization during model training.",
+      B: "Create AWS Glue DataBrew recipes to correct the data based on statistics from the model output.",
+      C: "Use SageMaker Clarify to evaluate the model and training data for underlying patterns that might affect accuracy.",
+      D: "Create AWS Lambda functions to automate data pre-processing and to ensure consistent quality of input data for the model."
+    },
+    answer: "C"
+  },
+  {
+    id: 97,
+    topic: 1,
+    stem: `A company uses 10 Reserved Instances of accelerated instance types to serve the current version of an ML model.
+
+An ML engineer needs to deploy a new version of the model to an Amazon SageMaker real-time inference endpoint.
+
+The solution must use the original 10 instances to serve both versions of the model. The solution also must include one additional Reserved Instance that is available to use in the deployment process. The transition between versions must occur with no downtime or service interruptions.
+
+Which solution will meet these requirements?`,
+    options: {
+      A: "Configure a blue/green deployment with all-at-once traffic shifting.",
+      B: "Configure a blue/green deployment with canary traffic shifting and a size of 10%.",
+      C: "Configure a shadow test with a traffic sampling percentage of 10%.",
+      D: "Configure a rolling deployment with a rolling batch size of 1."
+    },
+    answer: "B"
+  },
+  {
+    id: 98,
+    topic: 1,
+    stem: `An IoT company uses Amazon SageMaker to train and test an XGBoost model for object detection. ML engineers need to monitor performance metrics when they train the model with variants in hyperparameters. The ML engineers also need to send Short Message Service (SMS) text messages after training is complete.
+
+Which solution will meet these requirements?`,
+    options: {
+      A: "Use Amazon CloudWatch to monitor performance metrics. Use Amazon Simple Queue Service (Amazon SQS) for message delivery.",
+      B: "Use Amazon CloudWatch to monitor performance metrics. Use Amazon Simple Notification Service (Amazon SNS) for message delivery.",
+      C: "Use AWS CloudTrail to monitor performance metrics. Use Amazon Simple Queue Service (Amazon SQS) for message delivery.",
+      D: "Use AWS CloudTrail to monitor performance metrics. Use Amazon Simple Notification Service (Amazon SNS) for message delivery."
+    },
+    answer: "B"
+  },
+  {
+    id: 99,
+    topic: 1,
+    stem: `A company is working on an ML project that will include Amazon SageMaker notebook instances. An ML engineer must ensure that the SageMaker notebook instances do not allow root access.
+
+Which solution will prevent the deployment of notebook instances that allow root access?`,
+    options: {
+      A: "Use IAM condition keys to stop deployments of SageMaker notebook instances that allow root access.",
+      B: "Use AWS Key Management Service (AWS KMS) keys to stop deployments of SageMaker notebook instances that allow root access.",
+      C: "Monitor resource creation by using Amazon EventBridge events. Create an AWS Lambda function that deletes all deployed SageMaker notebook instances that allow root access.",
+      D: "Monitor resource creation by using AWS CloudFormation events. Create an AWS Lambda function that deletes all deployed SageMaker notebook instances that allow root access."
+    },
+    answer: "A"
+  },
+  {
+    id: 100,
+    topic: 1,
+    stem: `A company is using Amazon SageMaker to develop ML models. The company stores sensitive training data in an Amazon S3 bucket. The model training must have network isolation from the internet.
+
+Which solution will meet this requirement?`,
+    options: {
+      A: "Run the SageMaker training jobs in private subnets. Create a NAT gateway. Route traffic for training through the NAT gateway.",
+      B: "Run the SageMaker training jobs in private subnets. Create an S3 gateway VPC endpoint. Route traffic for training through the S3 gateway VPC endpoint.",
+      C: "Run the SageMaker training jobs in public subnets that have an attached security group. In the security group, use inbound rules to limit traffic from the internet. Encrypt SageMaker instance storage by using server-side encryption with AWS KMS keys (SSE-KMS).",
+      D: "Encrypt traffic to Amazon S3 by using a bucket policy that includes a value of True for the aws:SecureTransport condition key. Use default at-rest encryption for Amazon S3. Encrypt SageMaker instance storage by using server-side encryption with AWS KMS keys (SSE-KMS)."
+    },
+    answer: "B"
+  },
+  {
+    id: 101,
+    topic: 1,
+    stem: `A company needs an AWS solution that will automatically create versions of ML models as the models are created.
+
+Which solution will meet this requirement?`,
+    options: {
+      A: "Amazon Elastic Container Registry (Amazon ECR)",
+      B: "Model packages from Amazon SageMaker Marketplace",
+      C: "Amazon SageMaker ML Lineage Tracking",
+      D: "Amazon SageMaker Model Registry"
+    },
+    answer: "D",
+    explanation: `To automatically create versions of ML models as they are created, the company should use Amazon SageMaker Model Registry, which provides automatic versioning, cataloging of models for production use, tracking of model metadata, and management of model approval workflows. This centralized registry system makes it easy to track different versions of models and maintain governance over model deployment in production environments. While SageMaker ML Lineage Tracking (option C) can track relationships between ML artifacts, it focuses on tracking dependencies and data lineage rather than providing the automatic versioning capability needed for managing multiple iterations of models.`
+  },
+  {
+    id: 102,
+    topic: 1,
+    stem: `A company needs to use Retrieval Augmented Generation (RAG) to supplement an open source large language model (LLM) that runs on Amazon Bedrock. The company's data for RAG is a set of documents in an Amazon S3 bucket. The documents consist of .csv files and .docx files.
+
+Which solution will meet these requirements with the LEAST operational overhead?`,
+    options: {
+      A: "Create a pipeline in Amazon SageMaker Pipelines to generate a new model. Call the new model from Amazon Bedrock to perform RAG queries.",
+      B: "Convert the data into vectors. Store the data in an Amazon Neptune database. Connect the database to Amazon Bedrock. Call the Amazon Bedrock API to perform RAG queries.",
+      C: "Fine-tune an existing LLM by using an AutoML job in Amazon SageMaker. Configure the S3 bucket as a data source for the AutoML job. Deploy the LLM to a SageMaker endpoint. Use the endpoint to perform RAG queries.",
+      D: "Create a knowledge base for Amazon Bedrock. Configure a data source that references the S3 bucket. Use the Amazon Bedrock API to perform RAG queries."
+    },
+    answer: "D"
+  },
+  {
+    id: 103,
+    topic: 1,
+    stem: `A company plans to deploy an ML model for production inference on an Amazon SageMaker endpoint. The average inference payload size will vary from 100 MB to 300 MB. Inference requests must be processed in 60 minutes or less.
+
+Which SageMaker inference option will meet these requirements?`,
+    options: {
+      A: "Serverless inference",
+      B: "Asynchronous inference",
+      C: "Real-time inference",
+      D: "Batch transform"
+    },
+    answer: "B",
+    explanation: `In general, real-time inference supports payloads up to 5 MB for synchronous requests, while asynchronous inference can support larger payloads, often up to 5 GB. The use case in this questions involves inference payloads of 100 MB to 300 MB and needs to be processed in under 60 minutes, Asynchronous Inference is the best choice for handling large payloads without strict real-time requirements.`
+  },
+  {
+    id: 104,
+    topic: 1,
+    stem: `An ML engineer notices class imbalance in an image classification training job.
+
+What should the ML engineer do to resolve this issue?`,
+    options: {
+      A: "Reduce the size of the dataset.",
+      B: "Transform some of the images in the dataset.",
+      C: "Apply random oversampling on the dataset.",
+      D: "Apply random data splitting on the dataset."
+    },
+    answer: "C",
+    explanation: `The most common family of techniques in this category is resampling, which includes oversampling (adding more instances from the minority classes) and undersampling (removing instances from the majority classes)`
+  },
+  {
+    id: 105,
+    topic: 1,
+    stem: `A company receives daily .csv files about customer interactions with its ML model. The company stores the files in Amazon S3 and uses the files to retrain the model. An ML engineer needs to implement a solution to mask credit card numbers in the files before the model is retrained.
+
+Which solution will meet this requirement with the LEAST development effort?`,
+    options: {
+      A: "Create a discovery job in Amazon Macie. Configure the job to find and mask sensitive data.",
+      B: "Create Apache Spark code to run on an AWS Glue job. Use the Sensitive Data Detection functionality in AWS Glue to find and mask sensitive data.",
+      C: "Create Apache Spark code to run on an AWS Glue job. Program the code to perform a regex operation to find and mask sensitive data.",
+      D: "Create Apache Spark code to run on an Amazon EC2 instance. Program the code to perform an operation to find and mask sensitive data."
+    },
+    answer: "B"
+  },
+  {
+    id: 106,
+    topic: 1,
+    stem: `A medical company is using AWS to build a tool to recommend treatments for patients. The company has obtained health records and self-reported textual information in English from patients. The company needs to use this information to gain insight about the patients.
+
+Which solution will meet this requirement with the LEAST development effort?`,
+    options: {
+      A: "Use Amazon SageMaker to build a recurrent neural network (RNN) to summarize the data.",
+      B: "Use Amazon Comprehend Medical to summarize the data.",
+      C: "Use Amazon Kendra to create a quick-search tool to query the data.",
+      D: "Use the Amazon SageMaker Sequence-to-Sequence (seq2seq) algorithm to create a text summary from the data."
+    },
+    answer: "B",
+    explanation: `To gain insights from patient health records and self-reported textual information in English, the medical company should use Amazon Comprehend Medical, as it requires the least development effort. This solution is ideal because it's a purpose-built service for medical text analysis that comes pre-trained for healthcare data, can automatically extract medical conditions, medications, and treatments, and is HIPAA eligible. Unlike other options such as building a custom RNN with SageMaker, using Amazon Kendra for search, or implementing a SageMaker seq2seq algorithm, Comprehend Medical requires no ML expertise and provides immediate insights through a ready-to-use API, significantly reducing development time and complexity.`
+  },
+  {
+    id: 107,
+    topic: 1,
+    stem: `A company needs to extract entities from a PDF document to build a classifier model.
+
+Which solution will extract and store the entities in the LEAST amount of time?`,
+    options: {
+      A: "Use Amazon Comprehend to extract the entities. Store the output in Amazon S3.",
+      B: "Use an open source AI optical character recognition (OCR) tool on Amazon SageMaker to extract the entities. Store the output in Amazon S3.",
+      C: "Use Amazon Textract to extract the entities. Use Amazon Comprehend to convert the entities to text. Store the output in Amazon S3.",
+      D: "Use Amazon Textract integrated with Amazon Augmented AI (Amazon A2I) to extract the entities. Store the output in Amazon S3."
+    },
+    answer: "A",
+    explanation: `Amazon Comprehend feature for intelligent document processing (IDP). This feature allows you to classify and extract entities from PDF documents, Microsoft Word files, and images directly from Amazon Comprehend without you needing to extract the text first.`,
+    reference: "https://aws.amazon.com/blogs/aws/now-process-pdfs-word-documents-and-images-with-amazon-comprehend-for-"
+  },
+  {
+    id: 108,
+    topic: 1,
+    stem: `A company shares Amazon SageMaker Studio notebooks that are accessible through a VPN. The company must enforce access controls to prevent malicious actors from exploiting presigned URLs to access the notebooks.
+
+Which solution will meet these requirements?`,
+    options: {
+      A: "Set up Studio client IP validation by using the aws:sourceIp IAM policy condition.",
+      B: "Set up Studio client VPC validation by using the aws:sourceVpc IAM policy condition.",
+      C: "Set up Studio client role endpoint validation by using the aws:PrimaryTag IAM policy condition.",
+      D: "Set up Studio client user endpoint validation by using the aws:PrincipalTag IAM policy condition."
+    },
+    answer: "A",
+    explanation: `Context: The company is using Amazon SageMaker Studio notebooks. Access is allowed through a VPN, meaning users are coming from known, fixed IP ranges. The concern is unauthorized access via presigned URLs, which could potentially be used outside the trusted network. Why aws:sourceIp is the right choice: The aws:sourceIp condition in IAM policies allows you to restrict access based on the client's IP address. This is perfect for VPN-based setups where you know the IP range. It ensures that only users accessing from allowed IPs (e.g., your VPN subnet) can access SageMaker Studio resources, even if they have a valid presigned URL. This directly mitigates the risk of URL misuse from outside the VPN.`
+  },
+  {
+    id: 109,
+    topic: 1,
+    stem: `An ML engineer needs to merge and transform data from two sources to retrain an existing ML model. One data source consists of .csv files that are stored in an Amazon S3 bucket. Each .csv file consists of millions of records. The other data source is an Amazon Aurora DB cluster.
+
+The result of the merge process must be written to a second S3 bucket. The ML engineer needs to perform this merge-and-transform task every week.
+
+Which solution will meet these requirements with the LEAST operational overhead?`,
+    options: {
+      A: "Create a transient Amazon EMR cluster every week. Use the cluster to run an Apache Spark job to merge and transform the data.",
+      B: "Create a weekly AWS Glue job that uses the Apache Spark engine. Use DynamicFrame native operations to merge and transform the data.",
+      C: "Create an AWS Lambda function that runs Apache Spark code every week to merge and transform the data. Configure the Lambda function to connect to the initial S3 bucket and the DB cluster.",
+      D: "Create an AWS Batch job that runs Apache Spark code on Amazon EC2 instances every week. Configure the Spark code to save the data from the EC2 instances to the second S3 bucket."
+    },
+    answer: "B",
+    explanation: `The best solution is to create a weekly AWS Glue job that uses the Apache Spark engine with DynamicFrame native operations to merge and transform the data, as AWS Glue is a fully managed ETL service that provides built-in schedulers, native integration with S3 and Aurora, and requires minimal operational overhead compared to managing EMR clusters, Lambda functions, or AWS Batch jobs.`
+  },
+  {
+    id: 110,
+    topic: 1,
+    stem: `An ML engineer has deployed an Amazon SageMaker model to a serverless endpoint in production. The model is invoked by the InvokeEndpoint API operation.
+
+The model's latency in production is higher than the baseline latency in the test environment. The ML engineer thinks that the increase in latency is because of model startup time.
+
+What should the ML engineer do to confirm or deny this hypothesis?`,
+    options: {
+      A: "Schedule a SageMaker Model Monitor job. Observe metrics about model quality.",
+      B: "Schedule a SageMaker Model Monitor job with Amazon CloudWatch metrics enabled.",
+      C: "Enable Amazon CloudWatch metrics. Observe the ModelSetupTime metric in the SageMaker namespace.",
+      D: "Enable Amazon CloudWatch metrics. Observe the ModelLoadingWaitTime metric in the SageMaker namespace."
+    },
+    answer: "D",
+    explanation: `ModelSetupTime - The time it takes to launch new compute resources for a serverless endpoint. The time can vary depending on the model size, how long it takes to download the model, and the start-up time of the container. see`,
+    reference: "https://docs.aws.amazon.com/sagemaker/latest/dg/monitoring-cloudwatch.html"
+  },
+  {
+    id: 111,
+    topic: 1,
+    stem: `An ML engineer needs to ensure that a dataset complies with regulations for personally identifiable information (PII).
+
+The ML engineer will use the data to train an ML model on Amazon SageMaker instances. SageMaker must not use any of the PII.
+
+Which solution will meet these requirements in the MOST operationally efficient way?`,
+    options: {
+      A: "Use the Amazon Comprehend DetectPiiEntities API call to redact the PII from the data. Store the data in an Amazon S3 bucket. Access the S3 bucket from the SageMaker instances for model training.",
+      B: "Use the Amazon Comprehend DetectPiiEntities API call to redact the PII from the data. Store the data in an Amazon Elastic File System (Amazon EFS) file system. Mount the EFS file system to the SageMaker instances for model training.",
+      C: "Use AWS Glue DataBrew to cleanse the dataset of PII. Store the data in an Amazon Elastic File System (Amazon EFS) file system. Mount the EFS file system to the SageMaker instances for model training.",
+      D: "Use Amazon Macie for automatic discovery of PII in the data. Remove the PII. Store the data in an Amazon S3 bucket. Mount the S3 bucket to the SageMaker instances for model training."
+    },
+    answer: "A"
+  },
+  {
+    id: 112,
+    topic: 1,
+    stem: `A company must install a custom script on any newly created Amazon SageMaker notebook instances.
+
+Which solution will meet this requirement with the LEAST operational overhead?`,
+    options: {
+      A: "Create a lifecycle configuration script to install the custom script when a new SageMaker notebook is created. Attach the lifecycle configuration to every new SageMaker notebook as part of the creation steps.",
+      B: "Create a custom Amazon Elastic Container Registry (Amazon ECR) image that contains the custom script. Push the ECR image to a Docker registry. Attach the Docker image to a SageMaker Studio domain. Select the kernel to run as part of the SageMaker notebook.",
+      C: "Create a custom package index repository. Use AWS CodeArtifact to manage the installation of the custom script. Set up AWS PrivateLink endpoints to connect CodeArtifact to the SageMaker instance. Install the script.",
+      D: "Store the custom script in Amazon S3. Create an AWS Lambda function to install the custom script on new SageMaker notebooks. Configure Amazon EventBridge to invoke the Lambda function when a new SageMaker notebook is initialized."
+    },
+    answer: "A"
+  },
+  {
+    id: 113,
+    topic: 1,
+    stem: `A company is building a real-time data processing pipeline for an ecommerce application. The application generates a high volume of clickstream data that must be ingested, processed, and visualized in near real time. The company needs a solution that supports SQL for data processing and Jupyter notebooks for interactive analysis.
+
+Which solution will meet these requirements?`,
+    options: {
+      A: "Use Amazon Data Firehose to ingest the data. Create an AWS Lambda function to process the data. Store the processed data in Amazon S3. Use Amazon QuickSight to visualize the data.",
+      B: "Use Amazon Kinesis Data Streams to ingest the data. Use Amazon Data Firehose to transform the data. Use Amazon Athena to process the data. Use Amazon QuickSight to visualize the data.",
+      C: "Use Amazon Managed Streaming for Apache Kafka (Amazon MSK) to ingest the data. Use AWS Glue with PySpark to process the data. Store the processed data in Amazon S3. Use Amazon QuickSight to visualize the data.",
+      D: "Use Amazon Managed Streaming for Apache Kafka (Amazon MSK) to ingest the data. Use Amazon Managed Service for Apache Flink to process the data. Use the built-in Flink dashboard to visualize the data."
+    },
+    answer: "D",
+    explanation: `Requirements Recap: Real-time ingestion of high-volume clickstream data SQL-based data processing Jupyter notebooks for interactive analysis Near real-time visualization Amazon MSK + Managed Flink (Apache Flink): MSK is ideal for handling high-throughput, real-time event streams like clickstream data. Amazon Managed Service for Apache Flink: Provides stream processing with low latency Supports SQL via Apache Flink SQL Can integrate with Jupyter Notebooks via Apache Zeppelin or SageMaker notebooks (for interactive analysis) Flink dashboard allows for real-time data visualization and monitoring This stack is purpose-built for real-time streaming analytics, supports SQL for processing, and integrates well with notebooks and dashboards.`
+  },
+  {
+    id: 114,
+    topic: 1,
+    stem: `A medical company needs to store clinical data. The data includes personally identifiable information (PII) and protected health information (PHI).
+
+An ML engineer needs to implement a solution to ensure that the PII and PHI are not used to train ML models.
+
+Which solution will meet these requirements?`,
+    options: {
+      A: "Store the clinical data in Amazon S3 buckets. Use AWS Glue DataBrew to mask the PII and PHI before the data is used for model training.",
+      B: "Upload the clinical data to an Amazon Redshift database. Use built-in SQL stored procedures to automatically classify and mask the PII and PHI before the data is used for model training.",
+      C: "Use Amazon Comprehend to detect and mask the PII before the data is used for model training. Use Amazon Comprehend Medical to detect and mask the PHI before the data is used for model training.",
+      D: "Create an AWS Lambda function to encrypt the PII and PHI. Program the Lambda function to save the encrypted data to an Amazon S3 bucket for model training."
+    },
+    answer: "C"
+  }
+
+  // ---- TEMPLATE, single answer — copy, paste above this comment, add a comma ----
+  // ,{
+  //   id: 21,
+  //   topic: 1,
+  //   caseStudy: "fraud",           // optional — omit if the question stands alone
+  //   stem: `Question text here.`,
+  //   options: { A: "...", B: "...", C: "...", D: "..." },
+  //   answer: "B",                   // one letter, or ["A","C"] to require both
+  //   votes: [["B", 100]],           // optional community distribution
+  //   explanation: `Why B is right.` // optional — shown with the answer
+  // }
+
+  // ---- TEMPLATE, ordering (HOTSPOT) ----
+  // ,{
+  //   id: 22,
+  //   topic: 1,
+  //   type: "order",
+  //   format: "HOTSPOT",
+  //   stem: `Select and order three steps.`,
+  //   options: { A: "...", B: "...", C: "...", D: "..." },
+  //   answer: ["C", "A", "D"],       // the correct sequence
+  //   keyNote: `Optional caveat about the key.`
+  // }
+];
+</script>
+
+<style>
+/* Light palette is the base. Dark is redefined token-only, twice: once for the
+   un-stamped system-preference case, once for an explicit toggle. */
+:root {
+  --paper:      #f6f5f2;
+  --card:       #ffffff;
+  --sunken:     #eceae5;
+  --ink:        #16181d;
+  --ink-soft:   #4a4e59;
+  --ink-mute:   #6a6e7a;
+  --rule:       #dddbd4;
+  --rule-soft:  #e9e7e1;
+  --pen:        #2b4c7e;
+  --pen-ink:    #ffffff;
+  --pen-wash:   #e6ecf5;
+  --right:      #1e7a4e;
+  --right-wash: #e2f0e8;
+  --wrong:      #c0392b;
+  --wrong-wash: #f8e5e2;
+  --shown:      #9a6b12;
+  --shown-wash: #f6eddb;
+
+  --serif: "Iowan Old Style", "Charter", "Palatino Linotype", Palatino, Georgia, serif;
+  --sans:  "Avenir Next", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --mono:  ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, monospace;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper:      #14161a;
+    --card:       #1b1e24;
+    --sunken:     #23272e;
+    --ink:        #e9eaee;
+    --ink-soft:   #b7bcc7;
+    --ink-mute:   #878d9b;
+    --rule:       #333842;
+    --rule-soft:  #282d35;
+    --pen:        #8fb2e4;
+    --pen-ink:    #14161a;
+    --pen-wash:   #1f2a3a;
+    --right:      #56c68d;
+    --right-wash: #172b22;
+    --wrong:      #e8756a;
+    --wrong-wash: #33201e;
+    --shown:      #d7ab5a;
+    --shown-wash: #2e2718;
+  }
+}
+
+:root[data-theme="dark"] {
+  --paper:      #14161a;
+  --card:       #1b1e24;
+  --sunken:     #23272e;
+  --ink:        #e9eaee;
+  --ink-soft:   #b7bcc7;
+  --ink-mute:   #878d9b;
+  --rule:       #333842;
+  --rule-soft:  #282d35;
+  --pen:        #8fb2e4;
+  --pen-ink:    #14161a;
+  --pen-wash:   #1f2a3a;
+  --right:      #56c68d;
+  --right-wash: #172b22;
+  --wrong:      #e8756a;
+  --wrong-wash: #33201e;
+  --shown:      #d7ab5a;
+  --shown-wash: #2e2718;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--serif);
+  font-size: 17px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+.eyebrow {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+}
+
+/* ---------- shell ---------- */
+
+.masthead {
+  border-bottom: 1px solid var(--rule);
+  padding: 22px 28px 18px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 6px 18px;
+}
+.masthead h1 {
+  font-size: 21px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  margin: 0;
+}
+.masthead .eyebrow { flex: 1 1 100%; }
+
+.sheet {
+  display: grid;
+  grid-template-columns: 268px minmax(0, 1fr);
+  gap: 34px;
+  max-width: 1140px;
+  margin: 0 auto;
+  padding: 30px 28px 90px;
+  align-items: start;
+}
+
+/* ---------- rail: the answer sheet ---------- */
+
+.rail {
+  position: sticky;
+  top: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.tally { display: flex; flex-direction: column; gap: 10px; }
+.tally-figure {
+  font-family: var(--mono);
+  font-variant-numeric: tabular-nums;
+  font-size: 34px;
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+.tally-figure span { color: var(--ink-mute); font-size: 20px; }
+.tally-bar {
+  height: 5px;
+  background: var(--sunken);
+  border-radius: 3px;
+  overflow: hidden;
+  display: flex;
+}
+.tally-bar i { display: block; height: 100%; transition: width .3s ease; }
+.tally-bar .b-right { background: var(--right); }
+.tally-bar .b-wrong { background: var(--wrong); }
+.tally-bar .b-shown { background: var(--shown); }
+.tally-note {
+  font-family: var(--mono);
+  font-size: 11.5px;
+  color: var(--ink-mute);
+  font-variant-numeric: tabular-nums;
+}
+
+.grid-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+.bubbles {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(34px, 1fr));
+  gap: 6px;
+}
+.bub {
+  font-family: var(--mono);
+  font-variant-numeric: tabular-nums;
+  font-size: 12px;
+  aspect-ratio: 1;
+  border: 1px solid var(--rule);
+  border-radius: 50%;
+  background: var(--card);
+  color: var(--ink-mute);
+  cursor: pointer;
+  padding: 0;
+  transition: transform .12s ease;
+}
+.bub:hover { transform: scale(1.09); }
+.bub:focus-visible { outline: 2px solid var(--pen); outline-offset: 2px; }
+.bub[data-state="right"] { background: var(--right-wash); border-color: var(--right); color: var(--right); }
+.bub[data-state="wrong"] { background: var(--wrong-wash); border-color: var(--wrong); color: var(--wrong); }
+.bub[data-state="shown"] { background: var(--shown-wash); border-color: var(--shown); color: var(--shown); }
+.bub[aria-current="true"] {
+  border-color: var(--pen);
+  color: var(--pen);
+  box-shadow: 0 0 0 2px var(--pen-wash);
+  font-weight: 700;
+}
+
+.rail-controls { display: flex; flex-direction: column; gap: 12px; align-items: flex-start; }
+
+.switch {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--sans);
+  font-size: 13px;
+  color: var(--ink-soft);
+  cursor: pointer;
+}
+.switch input { position: absolute; opacity: 0; pointer-events: none; }
+.switch .track {
+  width: 34px;
+  height: 19px;
+  flex: none;
+  border-radius: 10px;
+  background: var(--sunken);
+  border: 1px solid var(--rule);
+  position: relative;
+  transition: background .18s ease, border-color .18s ease;
+}
+.switch .track::after {
+  content: "";
+  position: absolute;
+  top: 2px; left: 2px;
+  width: 13px; height: 13px;
+  border-radius: 50%;
+  background: var(--ink-mute);
+  transition: transform .18s ease, background .18s ease;
+}
+.switch input:checked + .track { background: var(--pen-wash); border-color: var(--pen); }
+.switch input:checked + .track::after { transform: translateX(15px); background: var(--pen); }
+.switch input:focus-visible + .track { outline: 2px solid var(--pen); outline-offset: 2px; }
+
+/* ---------- question card ---------- */
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--rule);
+  border-radius: 3px;
+  padding: 26px 30px 28px;
+}
+
+.card-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 8px 14px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--rule-soft);
+  margin-bottom: 20px;
+}
+.qno {
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--pen);
+}
+.chip {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--shown);
+  border: 1px solid var(--shown);
+  border-radius: 2px;
+  padding: 2px 6px;
+}
+
+.case {
+  background: var(--sunken);
+  border-left: 2px solid var(--rule);
+  border-radius: 2px;
+  margin-bottom: 22px;
+  font-size: 15.5px;
+  color: var(--ink-soft);
+}
+.case > summary {
+  cursor: pointer;
+  padding: 11px 16px;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+  list-style: none;
+}
+.case > summary::-webkit-details-marker { display: none; }
+.case > summary::before { content: "▸ "; }
+.case[open] > summary::before { content: "▾ "; }
+.case > summary:focus-visible { outline: 2px solid var(--pen); outline-offset: -2px; }
+.case-body { padding: 0 16px 14px; }
+.case-body p { margin: 0 0 0.85em; }
+.case-body p:last-child { margin-bottom: 0; }
+
+.stem { margin: 0 0 22px; }
+.stem p { margin: 0 0 0.9em; }
+.stem p:last-child { margin-bottom: 0; }
+.stem strong { font-weight: 700; letter-spacing: 0.02em; }
+
+.options { display: flex; flex-direction: column; gap: 8px; }
+
+.opt {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  width: 100%;
+  text-align: left;
+  font: inherit;
+  color: var(--ink);
+  background: transparent;
+  border: 1px solid var(--rule-soft);
+  border-radius: 3px;
+  padding: 12px 14px;
+  cursor: pointer;
+  transition: border-color .14s ease, background .14s ease;
+}
+.opt:hover { border-color: var(--rule); background: var(--sunken); }
+.opt:focus-visible { outline: 2px solid var(--pen); outline-offset: 2px; }
+.opt[disabled] { cursor: default; }
+.opt[disabled]:hover { background: transparent; border-color: var(--rule-soft); }
+
+.opt .mark {
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  width: 26px; height: 26px;
+  flex: none;
+  border: 1.5px solid var(--rule);
+  border-radius: 50%;
+  color: var(--ink-mute);
+  display: grid;
+  place-items: center;
+  margin-top: 1px;
+  transition: background .14s ease, border-color .14s ease, color .14s ease;
+}
+.opt .text { flex: 1; font-size: 16px; line-height: 1.5; }
+
+.opt[data-pick="on"] { border-color: var(--pen); background: var(--pen-wash); }
+.opt[data-pick="on"] .mark { background: var(--pen); border-color: var(--pen); color: var(--pen-ink); }
+
+.opt[data-verdict="right"] { border-color: var(--right); background: var(--right-wash); }
+.opt[data-verdict="right"] .mark { background: var(--right); border-color: var(--right); color: var(--card); }
+.opt[data-verdict="wrong"] { border-color: var(--wrong); background: var(--wrong-wash); }
+.opt[data-verdict="wrong"] .mark { background: var(--wrong); border-color: var(--wrong); color: var(--card); }
+.opt[data-verdict="key"] { border-color: var(--shown); background: var(--shown-wash); }
+.opt[data-verdict="key"] .mark { background: var(--shown); border-color: var(--shown); color: var(--card); }
+
+/* ---------- matching questions ---------- */
+
+.terms {
+  list-style: none;
+  margin: 0 0 18px;
+  padding: 14px 16px;
+  background: var(--sunken);
+  border-radius: 2px;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+.terms li { display: flex; gap: 12px; align-items: baseline; }
+.terms b {
+  font-family: var(--mono);
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--pen);
+  flex: none;
+  width: 14px;
+}
+.terms span { font-size: 15px; color: var(--ink-soft); }
+
+.mrows { display: flex; flex-direction: column; gap: 10px; }
+.mrow {
+  border: 1px solid var(--rule-soft);
+  border-radius: 3px;
+  padding: 12px 14px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 16px;
+}
+.mprompt { display: flex; gap: 12px; align-items: baseline; flex: 1 1 260px; }
+.mprompt b {
+  font-family: var(--mono);
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--ink-mute);
+  flex: none;
+}
+.mprompt span { font-size: 15.5px; line-height: 1.5; }
+.mchips { display: flex; gap: 6px; flex: none; }
+.chip-opt {
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  width: 30px;
+  height: 30px;
+  border: 1.5px solid var(--rule);
+  border-radius: 50%;
+  background: var(--card);
+  color: var(--ink-mute);
+  cursor: pointer;
+  transition: background .14s ease, border-color .14s ease, color .14s ease;
+}
+.chip-opt:hover:not([disabled]) { border-color: var(--pen); color: var(--pen); }
+.chip-opt:focus-visible { outline: 2px solid var(--pen); outline-offset: 2px; }
+.chip-opt[data-pick="on"] { background: var(--pen); border-color: var(--pen); color: var(--pen-ink); }
+.chip-opt[data-verdict="right"] { background: var(--right); border-color: var(--right); color: var(--card); }
+.chip-opt[data-verdict="wrong"] { background: var(--wrong); border-color: var(--wrong); color: var(--card); }
+.chip-opt[disabled] { cursor: default; }
+
+.key-pairs { margin: 6px 0 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 8px; max-width: 62ch; }
+.key-pairs li { display: flex; gap: 10px; font-size: 15.5px; line-height: 1.45; color: var(--ink-soft); }
+.key-pairs b { font-family: var(--mono); font-size: 11px; font-weight: 700; color: var(--right); flex: none; padding-top: 3px; }
+
+/* ---------- verdict + answer key ---------- */
+
+.verdict {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin-top: 20px;
+  font-family: var(--sans);
+  font-size: 14px;
+  font-weight: 600;
+}
+.verdict .dot { width: 8px; height: 8px; border-radius: 50%; flex: none; }
+.verdict[data-kind="right"] { color: var(--right); }
+.verdict[data-kind="right"] .dot { background: var(--right); }
+.verdict[data-kind="wrong"] { color: var(--wrong); }
+.verdict[data-kind="wrong"] .dot { background: var(--wrong); }
+.verdict[data-kind="shown"] { color: var(--shown); }
+.verdict[data-kind="shown"] .dot { background: var(--shown); }
+
+.key {
+  margin-top: 18px;
+  padding-top: 16px;
+  border-top: 1px solid var(--rule-soft);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 22px 40px;
+}
+.key-block { min-width: 160px; }
+.key-answer {
+  font-family: var(--mono);
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--right);
+  margin-top: 4px;
+  letter-spacing: 0.06em;
+}
+.key-steps {
+  margin: 6px 0 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-width: 60ch;
+}
+.key-steps li {
+  display: flex;
+  gap: 10px;
+  font-size: 15.5px;
+  line-height: 1.45;
+  color: var(--ink-soft);
+}
+.key-steps b {
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--right);
+  flex: none;
+  padding-top: 3px;
+}
+.votes { margin-top: 8px; display: flex; flex-direction: column; gap: 5px; min-width: 190px; }
+.vote {
+  display: grid;
+  grid-template-columns: 16px minmax(60px, 1fr) 38px;
+  align-items: center;
+  gap: 9px;
+  font-family: var(--mono);
+  font-size: 11.5px;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink-mute);
+}
+.vote .meter { height: 4px; background: var(--sunken); border-radius: 2px; overflow: hidden; }
+.vote .meter i { display: block; height: 100%; background: var(--ink-mute); border-radius: 2px; }
+.vote[data-key="true"] { color: var(--ink); }
+.vote[data-key="true"] .meter i { background: var(--right); }
+.vote .pct { text-align: right; }
+.explain { margin-top: 4px; font-size: 15.5px; color: var(--ink-soft); flex: 1 1 100%; }
+.explain p { margin: 0 0 0.8em; }
+.explain p:last-child { margin-bottom: 0; }
+.refline {
+  flex: 1 1 100%;
+  margin: 0;
+  font-family: var(--mono);
+  font-size: 11.5px;
+  line-height: 1.6;
+  color: var(--ink-mute);
+  word-break: break-all;
+}
+
+.keynote {
+  flex: 1 1 100%;
+  font-family: var(--sans);
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--shown);
+  border-left: 2px solid var(--shown);
+  padding-left: 11px;
+}
+
+/* ---------- action bar ---------- */
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  margin-top: 26px;
+  padding-top: 20px;
+  border-top: 1px solid var(--rule-soft);
+}
+.actions .spacer { flex: 1; }
+
+.btn {
+  font-family: var(--sans);
+  font-size: 13.5px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  padding: 9px 16px;
+  border-radius: 3px;
+  border: 1px solid var(--rule);
+  background: var(--card);
+  color: var(--ink);
+  cursor: pointer;
+  transition: background .14s ease, border-color .14s ease, opacity .14s ease;
+}
+.btn:hover:not([disabled]) { background: var(--sunken); border-color: var(--ink-mute); }
+.btn:focus-visible { outline: 2px solid var(--pen); outline-offset: 2px; }
+.btn[disabled] { opacity: .4; cursor: default; }
+.btn-primary { background: var(--pen); border-color: var(--pen); color: var(--pen-ink); }
+.btn-primary:hover:not([disabled]) { background: var(--pen); border-color: var(--pen); filter: brightness(1.12); }
+.btn-quiet { border-color: transparent; color: var(--ink-mute); }
+.btn-quiet:hover:not([disabled]) { color: var(--ink); }
+.btn-flush { padding-left: 0; }
+
+.hint {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--ink-mute);
+  margin-top: 16px;
+  letter-spacing: 0.03em;
+}
+.hint kbd {
+  font: inherit;
+  border: 1px solid var(--rule);
+  border-bottom-width: 2px;
+  border-radius: 3px;
+  padding: 1px 5px;
+  color: var(--ink-soft);
+}
+
+/* ---------- flashcards ---------- */
+
+.seg {
+  display: flex;
+  align-self: stretch;
+  border: 1px solid var(--rule);
+  border-radius: 3px;
+  overflow: hidden;
+}
+.seg button {
+  flex: 1;
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 600;
+  padding: 8px 10px;
+  border: 0;
+  background: var(--card);
+  color: var(--ink-mute);
+  cursor: pointer;
+  transition: background .14s ease, color .14s ease;
+}
+.seg button + button { border-left: 1px solid var(--rule); }
+.seg button:hover { background: var(--sunken); color: var(--ink); }
+.seg button[aria-pressed="true"] { background: var(--pen); color: var(--pen-ink); }
+.seg button:focus-visible { outline: 2px solid var(--pen); outline-offset: -3px; }
+
+.card-bare { background: transparent; border: 0; padding: 0; border-radius: 0; }
+
+.flipwrap { perspective: 1800px; }
+.flip {
+  display: grid;
+  transform-style: preserve-3d;
+  transition: transform .55s cubic-bezier(.2, .7, .2, 1);
+}
+.flip[data-face="back"] { transform: rotateY(180deg); }
+
+.face {
+  grid-area: 1 / 1;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  background: var(--card);
+  border: 1px solid var(--rule);
+  border-radius: 3px;
+  padding: 26px 30px 30px;
+  min-height: 340px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  cursor: pointer;
+}
+.face-back { transform: rotateY(180deg); border-color: var(--pen); }
+
+.face-stem { font-size: 18px; line-height: 1.55; }
+.face-stem p { margin: 0 0 0.8em; }
+.face-stem p:last-child { margin-bottom: 0; }
+.face-stem strong { font-weight: 700; letter-spacing: 0.02em; }
+
+.face-opts {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+.face-opts li { display: flex; gap: 13px; align-items: baseline; }
+.face-opts b {
+  font-family: var(--mono);
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--ink-mute);
+  flex: none;
+  width: 16px;
+}
+.face-opts span { font-size: 15.5px; line-height: 1.5; color: var(--ink-soft); }
+
+.face-key { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 12px; }
+.face-key li { display: flex; gap: 14px; align-items: baseline; }
+.face-key b {
+  font-family: var(--mono);
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--right);
+  flex: none;
+  letter-spacing: 0.04em;
+}
+.face-key span { font-size: 17px; line-height: 1.5; }
+
+.face-foot { margin-top: auto; padding-top: 8px; }
+.turn-hint {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+}
+
+/* ---------- paste importer ---------- */
+
+.import {
+  background: var(--card);
+  border: 1px solid var(--rule);
+  border-radius: 3px;
+  padding: 20px 22px 22px;
+  margin-bottom: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.import[hidden] { display: none; }
+.import-head { display: flex; align-items: center; gap: 12px; }
+.import-head .spacer { flex: 1; }
+.import-help {
+  margin: 0;
+  font-family: var(--sans);
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--ink-mute);
+  max-width: 68ch;
+}
+.import-help code {
+  font-family: var(--mono);
+  font-size: 11.5px;
+  background: var(--sunken);
+  border-radius: 2px;
+  padding: 1px 5px;
+  color: var(--ink-soft);
+}
+#importText {
+  width: 100%;
+  min-height: 210px;
+  resize: vertical;
+  font-family: var(--mono);
+  font-size: 12px;
+  line-height: 1.55;
+  color: var(--ink);
+  background: var(--paper);
+  border: 1px solid var(--rule);
+  border-radius: 3px;
+  padding: 12px 14px;
+}
+#importText:focus-visible { outline: 2px solid var(--pen); outline-offset: 1px; }
+.import-actions { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.import-actions .spacer { flex: 1; }
+.import-report {
+  margin: 0;
+  font-family: var(--sans);
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--ink-soft);
+}
+.import-report:empty { display: none; }
+.import-report b { font-weight: 600; }
+.import-report .bad { color: var(--wrong); }
+.import-report .ok { color: var(--right); }
+
+/* ---------- review banner ---------- */
+
+.banner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 14px;
+  margin-bottom: 20px;
+  padding: 10px 14px;
+  border-left: 2px solid var(--shown);
+  background: var(--shown-wash);
+  border-radius: 2px;
+  font-family: var(--sans);
+  font-size: 13px;
+  color: var(--ink-soft);
+}
+.banner .spacer { flex: 1; }
+
+/* ---------- result view ---------- */
+
+.result-top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 10px 34px;
+  margin-bottom: 22px;
+}
+.score-figure {
+  font-family: var(--mono);
+  font-variant-numeric: tabular-nums;
+  font-size: 72px;
+  line-height: 0.9;
+  letter-spacing: -0.04em;
+  color: var(--ink);
+}
+.score-figure span { font-size: 30px; color: var(--ink-mute); }
+.score-meta { flex: 1 1 260px; display: flex; flex-direction: column; gap: 10px; }
+.score-line { font-size: 16.5px; color: var(--ink-soft); }
+
+.segbar {
+  height: 9px;
+  display: flex;
+  gap: 2px;
+  background: var(--sunken);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.segbar i { display: block; height: 100%; }
+.segbar .s-right { background: var(--right); }
+.segbar .s-wrong { background: var(--wrong); }
+.segbar .s-shown { background: var(--shown); }
+
+.breakdown {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(132px, 1fr));
+  gap: 1px;
+  background: var(--rule-soft);
+  border: 1px solid var(--rule-soft);
+  border-radius: 3px;
+  margin: 0 0 18px;
+  overflow: hidden;
+}
+.brow {
+  background: var(--card);
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.brow .n {
+  font-family: var(--mono);
+  font-variant-numeric: tabular-nums;
+  font-size: 24px;
+  line-height: 1;
+}
+.brow .l {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.brow .l::before {
+  content: "";
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--ink-mute);
+  flex: none;
+}
+.brow[data-kind="right"] .n, .brow[data-kind="right"] .l { color: var(--right); }
+.brow[data-kind="right"] .l::before { background: var(--right); }
+.brow[data-kind="wrong"] .n, .brow[data-kind="wrong"] .l { color: var(--wrong); }
+.brow[data-kind="wrong"] .l::before { background: var(--wrong); }
+.brow[data-kind="shown"] .n, .brow[data-kind="shown"] .l { color: var(--shown); }
+.brow[data-kind="shown"] .l::before { background: var(--shown); }
+
+.note {
+  font-family: var(--sans);
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--ink-mute);
+  margin: 0 0 22px;
+  max-width: 62ch;
+}
+.note b { color: var(--ink-soft); font-weight: 600; }
+
+.qlist {
+  display: flex;
+  flex-direction: column;
+  border-top: 1px solid var(--rule-soft);
+  margin-bottom: 4px;
+}
+.qrow {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  width: 100%;
+  text-align: left;
+  font: inherit;
+  color: var(--ink);
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid var(--rule-soft);
+  padding: 10px 4px;
+  cursor: pointer;
+}
+.qrow:hover { background: var(--sunken); }
+.qrow:focus-visible { outline: 2px solid var(--pen); outline-offset: -2px; }
+.qrow .qid {
+  font-family: var(--mono);
+  font-size: 11.5px;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink-mute);
+  width: 30px;
+  flex: none;
+}
+.qrow .qtext {
+  flex: 1;
+  font-size: 15px;
+  color: var(--ink-soft);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.pill {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 3px 7px;
+  border-radius: 2px;
+  flex: none;
+  border: 1px solid var(--rule);
+  color: var(--ink-mute);
+}
+.pill[data-kind="right"] { color: var(--right); border-color: var(--right); background: var(--right-wash); }
+.pill[data-kind="wrong"] { color: var(--wrong); border-color: var(--wrong); background: var(--wrong-wash); }
+.pill[data-kind="shown"] { color: var(--shown); border-color: var(--shown); background: var(--shown-wash); }
+
+@media (max-width: 860px) {
+  .sheet { grid-template-columns: 1fr; gap: 26px; padding: 22px 18px 70px; }
+  .score-figure { font-size: 58px; }
+  .qrow .qtext { white-space: normal; }
+  .rail { position: static; }
+  .bubbles { grid-template-columns: repeat(auto-fill, minmax(32px, 1fr)); }
+  .card { padding: 20px 18px 22px; }
+  .masthead { padding: 18px 18px 14px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; }
+}
+</style>
+
+<header class="masthead">
+  <span class="eyebrow">AWS Certified Machine Learning Engineer — Associate · MLA-C01</span>
+  <h1>Answer Sheet</h1>
+</header>
+
+<div class="sheet">
+  <aside class="rail">
+    <div class="tally">
+      <div class="tally-figure" id="tallyFigure">0<span>%</span></div>
+      <div class="tally-bar"><i class="b-right" id="barRight" style="width:0"></i><i class="b-wrong" id="barWrong" style="width:0"></i><i class="b-shown" id="barShown" style="width:0"></i></div>
+      <div class="tally-note" id="tallyNote">Nothing attempted yet</div>
+    </div>
+
+    <nav>
+      <div class="grid-label">
+        <span class="eyebrow">Questions</span>
+        <span class="eyebrow" id="bankSize"></span>
+      </div>
+      <div class="bubbles" id="bubbles"></div>
+    </nav>
+
+    <div class="rail-controls">
+      <div class="seg" role="group" aria-label="View">
+        <button type="button" id="modeSheet" aria-pressed="true">Answer sheet</button>
+        <button type="button" id="modeCards" aria-pressed="false">Flashcards</button>
+      </div>
+      <label class="switch">
+        <input type="checkbox" id="shuffleMode">
+        <span class="track"></span>
+        <span>Random order</span>
+      </label>
+      <label class="switch">
+        <input type="checkbox" id="studyMode">
+        <span class="track"></span>
+        <span>Study mode — answers shown</span>
+      </label>
+      <button class="btn" type="button" id="randomBtn">Jump to a random question</button>
+      <button class="btn btn-primary" type="button" id="resultBtn">See test result</button>
+      <button class="btn" type="button" id="importBtn">Add questions</button>
+      <button class="btn btn-quiet btn-flush" id="resetBtn">Clear all marks</button>
+    </div>
+  </aside>
+
+  <main>
+    <section class="import" id="importPanel" hidden>
+      <div class="import-head">
+        <span class="eyebrow">Paste questions</span>
+        <span class="spacer"></span>
+        <button class="btn btn-quiet" type="button" id="importClose">Close</button>
+      </div>
+      <p class="import-help">
+        Paste one or more questions exactly as they appear — <code>Question #21Topic 1</code>, the stem,
+        the <code>A.</code>–<code>E.</code> options, <code>Correct Answer: C</code>, and the community vote
+        lines. A case study repeated across several pasted questions is detected and stored once.
+        Questions whose answer is an image are reported and skipped, since there is nothing to grade against.
+      </p>
+      <textarea id="importText" spellcheck="false" placeholder="Question #21Topic 1&#10;A company needs to…&#10;&#10;A. First option&#10;B. Second option&#10;C. Third option&#10;D. Fourth option&#10;&#10;Correct Answer: C&#10;Community vote distribution&#10;C (100%)"></textarea>
+      <div class="import-actions">
+        <button class="btn btn-primary" type="button" id="importRun">Parse &amp; add</button>
+        <button class="btn" type="button" id="importExport">Copy as JS for index.html</button>
+        <span class="spacer"></span>
+        <button class="btn btn-quiet" type="button" id="importClear">Remove imported</button>
+      </div>
+      <p class="import-report" id="importReport"></p>
+    </section>
+
+    <article class="card" id="card"></article>
+    <p class="hint" id="hint"></p>
+  </main>
+</div>
+
+<script>
+const STORE_KEY = "mla-c01-answer-sheet-v2";
+const LETTERS = ["A", "B", "C", "D", "E", "F"];
+
+const BLANK = {
+  marks: {},        // { [question id]: { picked, verified, revealed } }
+  study: false,     // show every answer up front
+  shuffle: false,   // randomised question order
+  perm: null,       // the stored shuffle, so the order holds still between renders
+  reviewIds: null,  // frozen list of ids while reviewing missed questions
+  view: "quiz",     // "quiz" | "result"
+  mode: "sheet",    // "sheet" (pick and verify) | "cards" (flip and self-grade)
+  flipped: false,   // whether the current flashcard is showing its back
+  at: 0,
+  caseOpen: true,
+  startedAt: null,
+  finishedAt: null
+};
+
+let state = Object.assign({}, BLANK);
+
+try {
+  const saved = JSON.parse(localStorage.getItem(STORE_KEY) || "null");
+  if (saved && typeof saved === "object") state = Object.assign(state, saved);
+} catch (e) { /* corrupt or unavailable storage — start clean */ }
+
+const save = () => {
+  try { localStorage.setItem(STORE_KEY, JSON.stringify(state)); } catch (e) {}
+};
+
+// Pasted questions live in storage and are folded into the bank at boot, so the
+// rest of the app never has to know where a question came from.
+function mergeImported() {
+  Object.assign(CASE_STUDIES, state.importedCases || {});
+  (state.imported || []).forEach(q => {
+    const i = QUESTIONS.findIndex(x => x.id === q.id);
+    if (i > -1) QUESTIONS[i] = q; else QUESTIONS.push(q);
+  });
+  QUESTIONS.sort((a, b) => a.id - b.id);
+}
+mergeImported();
+
+/* ---------- model ---------- */
+
+const answerOf = q => [].concat(q.answer);
+const picksOf = mark => mark && mark.picked ? [].concat(mark.picked) : [];
+const markOf = q => state.marks[q.id] || null;
+const isOrder = q => q.type === "order";
+const isMatch = q => q.type === "match";
+// Ordering and matching are both graded slot by slot rather than as a set.
+const isPositional = q => isOrder(q) || isMatch(q);
+
+function isRight(q, picked) {
+  const p = [].concat(picked || []);
+  const a = answerOf(q);
+  if (p.length !== a.length || !p.length) return false;
+  if (isPositional(q)) return p.every((v, i) => v === a[i]);
+  return p.slice().sort().join("") === a.slice().sort().join("");
+}
+
+// Revealing the answer is scored against you: you did not answer it cold.
+// The result screen also reports the score with revealed questions excluded.
+function outcome(q) {
+  const m = markOf(q);
+  if (!m) return null;
+  if (m.self) return m.self === "knew" ? "right" : "wrong";   // graded on a flashcard
+  if (m.verified) return isRight(q, picksOf(m)) ? "right" : "wrong";
+  if (m.revealed) return "revealed";
+  return null;                       // selected but not yet verified
+}
+
+function tally() {
+  let right = 0, wrong = 0, revealed = 0;
+  QUESTIONS.forEach(q => {
+    const o = outcome(q);
+    if (o === "right") right++;
+    else if (o === "wrong") wrong++;
+    else if (o === "revealed") revealed++;
+  });
+  const total = QUESTIONS.length;
+  const scored = right + wrong + revealed;
+  const answered = right + wrong;
+  return {
+    right, wrong, revealed, scored, answered, total,
+    left: total - scored,
+    pct: scored ? Math.round(right / scored * 100) : 0,
+    pctAnswered: answered ? Math.round(right / answered * 100) : 0
+  };
+}
+
+/* ---------- ordering + navigation ---------- */
+
+function shuffledIndexes() {
+  const a = QUESTIONS.map((_, i) => i);
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function baseOrder() {
+  return state.shuffle && state.perm && state.perm.length === QUESTIONS.length
+    ? state.perm.slice()
+    : QUESTIONS.map((_, i) => i);
+}
+
+function viewOrder() {
+  const base = baseOrder();
+  if (state.reviewIds && state.reviewIds.length) {
+    const keep = new Set(state.reviewIds);
+    const filtered = base.filter(i => keep.has(QUESTIONS[i].id));
+    if (filtered.length) return filtered;
+  }
+  return base;
+}
+
+function clampAt() {
+  const n = viewOrder().length;
+  state.at = Math.min(Math.max(0, state.at | 0), Math.max(0, n - 1));
+}
+
+function current() {
+  clampAt();
+  return QUESTIONS[viewOrder()[state.at]];
+}
+
+function goToQuestion(qid) {
+  const order = viewOrder();
+  const pos = order.findIndex(i => QUESTIONS[i].id === qid);
+  if (pos > -1) { state.at = pos; return true; }
+  return false;
+}
+
+/* ---------- text helpers ---------- */
+
+function esc(s) {
+  return String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+}
+
+const paras = text => text.trim().split(/\n\s*\n/)
+  .map(p => "<p>" + esc(p).replace(/\n/g, "<br>") + "</p>").join("");
+
+// LEAST / MOST / MINIMIZE are the words that decide these questions — set them apart.
+const emphasize = html =>
+  html.replace(/\b(LEAST|MOST|BEST|MINIMIZE|MAXIMIZE|NOT|ONLY)\b/g, "<strong>$1</strong>");
+
+// The last paragraph of a stem is the question itself — the useful one-line label.
+const askedIn = q => {
+  const ps = q.stem.trim().split(/\n\s*\n/);
+  return ps[ps.length - 1].replace(/\s+/g, " ");
+};
+
+function duration(ms) {
+  const mins = Math.round(ms / 60000);
+  if (mins < 1) return "under a minute";
+  if (mins < 60) return mins + " min";
+  return Math.floor(mins / 60) + " hr " + (mins % 60) + " min";
+}
+
+function stamp() {
+  if (!state.startedAt) state.startedAt = Date.now();
+  state.finishedAt = null;
+}
+
+/* ---------- render ---------- */
+
+function render() {
+  const card = document.getElementById("card");
+  card.className = state.view === "quiz" && state.mode === "cards" ? "card card-bare" : "card";
+  if (state.view === "result") renderResult();
+  else if (state.mode === "cards") renderCard();
+  else renderQuestion();
+  renderRail();
+
+  document.getElementById("hint").innerHTML = state.view === "result"
+    ? `<kbd>Esc</kbd> back to the questions`
+    : state.mode === "cards"
+      ? `<kbd>Space</kbd> turn the card · <kbd>K</kbd> knew it · <kbd>M</kbd> missed it · <kbd>R</kbd> random · <kbd>←</kbd> <kbd>→</kbd> move between cards`
+      : `<kbd>A</kbd>–<kbd>E</kbd> select · <kbd>Enter</kbd> verify · <kbd>R</kbd> random · <kbd>←</kbd> <kbd>→</kbd> move between questions`;
+}
+
+function renderCard() {
+  const q = current();
+  const mark = markOf(q);
+  const answer = answerOf(q);
+  const order = viewOrder();
+  const o = outcome(q);
+  const flipped = state.flipped || state.study;
+  const last = state.at === order.length - 1;
+
+  const head = extra => `
+    <div class="card-head" style="margin-bottom:0;padding-bottom:12px">
+      <span class="qno">Q${q.id}</span>
+      <span class="eyebrow">Topic ${q.topic || 1} · ${state.at + 1} of ${order.length}</span>
+      ${q.format ? `<span class="chip">${esc(q.format)}</span>` : ""}
+      ${extra}
+    </div>`;
+
+  const stateLabel = o === "right" ? `<span class="pill" data-kind="right">Knew it</span>`
+    : o === "wrong" ? `<span class="pill" data-kind="wrong">Missed it</span>`
+    : o === "revealed" ? `<span class="pill" data-kind="shown">Revealed</span>` : "";
+
+  const optList = LETTERS.filter(L => q.options[L])
+    .map(L => `<li><b>${L}</b><span>${esc(q.options[L])}</span></li>`).join("") +
+    (isMatch(q) ? (q.prompts || []).map((p, i) =>
+      `<li><b>${i + 1}</b><span style="color:var(--ink)">${esc(p)}</span></li>`).join("") : "");
+
+  const keyList = answer.map((L, i) => isMatch(q)
+    ? `<li><b>${i + 1}</b><span>${esc((q.prompts || [])[i] || "")} → ${esc(q.options[L])}</span></li>`
+    : `<li><b>${isOrder(q) ? (i + 1) + " · " + L : L}</b><span>${esc(q.options[L])}</span></li>`).join("");
+
+  const votes = (q.votes || []).map(([L, pct]) => `
+    <div class="vote" data-key="${answer.includes(L)}">
+      <span>${esc(L)}</span>
+      <span class="meter"><i style="width:${Math.max(2, pct)}%"></i></span>
+      <span class="pct">${pct}%</span>
+    </div>`).join("");
+
+  document.getElementById("card").innerHTML = `
+    ${state.reviewIds && state.reviewIds.length ? `<div class="banner">
+      <span>Reviewing ${order.length} missed question${order.length === 1 ? "" : "s"}.</span>
+      <span class="spacer"></span>
+      <button class="btn btn-quiet" type="button" id="exitReviewBtn">Show all questions</button>
+    </div>` : ""}
+
+    <div class="flipwrap">
+      <div class="flip" data-face="${flipped ? "back" : "front"}">
+        <section class="face" id="faceFront" aria-hidden="${flipped}">
+          ${head(stateLabel)}
+          ${q.caseStudy && CASE_STUDIES[q.caseStudy] ? `<details class="case" style="margin-bottom:0"${state.caseOpen ? " open" : ""}>
+            <summary>Case study</summary>
+            <div class="case-body">${paras(CASE_STUDIES[q.caseStudy])}</div>
+          </details>` : ""}
+          <div class="face-stem">${emphasize(paras(q.stem))}</div>
+          <ul class="face-opts">${optList}</ul>
+          <div class="face-foot"><span class="turn-hint">Click the card to turn it over</span></div>
+        </section>
+
+        <section class="face face-back" id="faceBack" aria-hidden="${!flipped}">
+          ${head(`<span class="eyebrow">${isOrder(q) ? "Correct order" : isMatch(q) ? "Correct matches" : "Correct answer"}</span>`)}
+          <ul class="face-key">${keyList}</ul>
+          ${votes ? `<div><span class="eyebrow">Community vote</span><div class="votes">${votes}</div></div>` : ""}
+          ${q.explanation ? `<div class="explain">${paras(q.explanation)}</div>` : ""}
+          ${q.reference ? `<p class="refline"><span class="eyebrow">Reference</span><br>${esc(q.reference)}</p>` : ""}
+          ${q.keyNote ? `<p class="keynote">${esc(q.keyNote)}</p>` : ""}
+          <div class="face-foot"><span class="turn-hint">Click the card to turn it back</span></div>
+        </section>
+      </div>
+    </div>
+
+    <div class="actions">
+      ${flipped
+        ? `<button class="btn btn-primary" type="button" id="knewBtn">I knew it</button>
+           <button class="btn" type="button" id="missedBtn">I missed it</button>`
+        : `<button class="btn btn-primary" type="button" id="flipBtn">Turn card</button>`}
+      <span class="spacer"></span>
+      <button class="btn btn-quiet" type="button" id="prevBtn" ${state.at === 0 ? "disabled" : ""}>← Previous</button>
+      ${last
+        ? `<button class="btn" type="button" id="finishBtn">See result →</button>`
+        : `<button class="btn" type="button" id="nextBtn">Next →</button>`}
+    </div>`;
+
+  document.querySelectorAll(".face").forEach(face => {
+    face.addEventListener("click", e => {
+      if (e.target.closest("button, summary, a")) return;   // let controls do their own job
+      flip();
+    });
+  });
+
+  const flipBtn = document.getElementById("flipBtn");
+  if (flipBtn) flipBtn.addEventListener("click", flip);
+
+  const knew = document.getElementById("knewBtn");
+  if (knew) knew.addEventListener("click", () => selfGrade("knew"));
+  const missed = document.getElementById("missedBtn");
+  if (missed) missed.addEventListener("click", () => selfGrade("missed"));
+
+  document.getElementById("prevBtn").addEventListener("click", () => go(state.at - 1));
+  const next = document.getElementById("nextBtn");
+  if (next) next.addEventListener("click", () => go(state.at + 1));
+  const finish = document.getElementById("finishBtn");
+  if (finish) finish.addEventListener("click", showResult);
+  const exit = document.getElementById("exitReviewBtn");
+  if (exit) exit.addEventListener("click", () => {
+    const qid = current().id;
+    state.reviewIds = null;
+    goToQuestion(qid);
+    save();
+    render();
+  });
+  const c = document.querySelector(".case");
+  if (c) c.addEventListener("toggle", () => { state.caseOpen = c.open; save(); });
+}
+
+function flip() {
+  if (state.study) return;      // study mode keeps every card face up
+  state.flipped = !state.flipped;
+  save();
+  render();
+}
+
+// Self-grading on a card feeds the same tally as verifying on the answer sheet.
+function selfGrade(kind) {
+  const q = current();
+  stamp();
+  state.marks[q.id] = { self: kind, verified: true };
+  state.flipped = false;
+  save();
+  if (state.at < viewOrder().length - 1) go(state.at + 1);
+  else render();
+}
+
+function renderQuestion() {
+  const q = current();
+  const mark = markOf(q);
+  const picks = picksOf(mark);
+  const answer = answerOf(q);
+  const revealed = state.study || !!(mark && (mark.verified || mark.revealed));
+  const graded = !!(mark && mark.verified);
+  const order = viewOrder();
+
+  const terms = () => `<ul class="terms">${LETTERS.filter(L => q.options[L])
+    .map(L => `<li><b>${L}</b><span>${esc(q.options[L])}</span></li>`).join("")}</ul>`;
+
+  const matchRows = () => `${terms()}<div class="mrows">${(q.prompts || []).map((prompt, i) => {
+    const sel = picks[i] || "";
+    const chips = LETTERS.filter(L => q.options[L]).map(L => {
+      let attr = "";
+      if (revealed) {
+        if (answer[i] === L) attr = ' data-verdict="right"';
+        else if (sel === L) attr = ' data-verdict="wrong"';
+      } else if (sel === L) attr = ' data-pick="on"';
+      return `<button class="chip-opt" type="button" data-slot="${i}" data-letter="${L}"${attr} ${revealed ? "disabled" : ""}>${L}</button>`;
+    }).join("");
+    return `<div class="mrow">
+      <div class="mprompt"><b>${i + 1}</b><span>${esc(prompt)}</span></div>
+      <div class="mchips">${chips}</div>
+    </div>`;
+  }).join("")}</div>`;
+
+  const opts = isMatch(q) ? matchRows() : LETTERS.filter(L => q.options[L]).map(L => {
+    const pos = picks.indexOf(L);
+    const picked = pos > -1;
+    let verdict = "";
+    if (revealed) {
+      if (graded && isOrder(q)) {
+        if (picked && answer[pos] === L) verdict = "right";
+        else if (picked) verdict = "wrong";
+        else if (answer.includes(L)) verdict = "key";
+      } else if (graded) {
+        if (answer.includes(L)) verdict = "right";
+        else if (picked) verdict = "wrong";
+      } else {
+        if (answer.includes(L)) verdict = "key";
+        else if (picked) verdict = "wrong";
+      }
+    }
+    const face = isOrder(q) && picked ? pos + 1 : L;
+    return `<button class="opt" type="button" data-letter="${L}"
+      ${picked ? 'data-pick="on"' : ""}
+      ${verdict ? `data-verdict="${verdict}"` : ""}
+      ${revealed ? "disabled" : ""}>
+      <span class="mark">${face}</span>
+      <span class="text">${esc(q.options[L])}</span>
+    </button>`;
+  }).join("");
+
+  let verdictRow = "";
+  if (mark && mark.self) {
+    const knew = mark.self === "knew";
+    verdictRow = `<div class="verdict" data-kind="${knew ? "right" : "wrong"}"><span class="dot"></span>${
+      knew ? "You marked this one known on a flashcard" : "You marked this one missed on a flashcard"}</div>`;
+  } else if (graded) {
+    const ok = isRight(q, picks);
+    verdictRow = `<div class="verdict" data-kind="${ok ? "right" : "wrong"}"><span class="dot"></span>${
+      ok ? "Correct" : isMatch(q)
+        ? `Incorrect — ${picks.filter((L, i) => L !== answer[i]).length} of ${answer.length} matched wrongly`
+        : `Incorrect — you marked ${picks.join(isOrder(q) ? " → " : ", ") || "nothing"}`}</div>`;
+  } else if (mark && mark.revealed && !state.study) {
+    verdictRow = `<div class="verdict" data-kind="shown"><span class="dot"></span>Answer revealed — scored as incorrect</div>`;
+  }
+
+  let keyBlock = "";
+  if (revealed) {
+    const votes = (q.votes || []).map(([L, pct]) => `
+      <div class="vote" data-key="${answer.includes(L)}">
+        <span>${esc(L)}</span>
+        <span class="meter"><i style="width:${Math.max(2, pct)}%"></i></span>
+        <span class="pct">${pct}%</span>
+      </div>`).join("");
+
+    const answerView = isMatch(q)
+      ? `<ul class="key-pairs">${answer.map((L, i) =>
+          `<li><b>${i + 1} · ${L}</b><span>${esc((q.prompts || [])[i] || "")} → <b style="color:inherit;font-size:inherit;padding:0">${esc(q.options[L])}</b></span></li>`).join("")}</ul>`
+      : isOrder(q)
+      ? `<ol class="key-steps">${answer.map((L, i) =>
+          `<li><b>${i + 1} · ${L}</b><span>${esc(q.options[L])}</span></li>`).join("")}</ol>`
+      : `<div class="key-answer">${answer.join(" ")}</div>`;
+
+    keyBlock = `<div class="key">
+      <div class="key-block" style="${isOrder(q) ? "flex:1 1 100%" : ""}">
+        <span class="eyebrow">Correct ${isOrder(q) ? "order" : isMatch(q) ? "matches" : "answer"}</span>
+        ${answerView}
+      </div>
+      ${votes ? `<div class="key-block"><span class="eyebrow">Community vote</span><div class="votes">${votes}</div></div>` : ""}
+      ${q.explanation ? `<div class="explain">${paras(q.explanation)}</div>` : ""}
+      ${q.reference ? `<p class="refline"><span class="eyebrow">Reference</span><br>${esc(q.reference)}</p>` : ""}
+      ${q.keyNote ? `<p class="keynote">${esc(q.keyNote)}</p>` : ""}
+    </div>`;
+  }
+
+  const complete = isMatch(q)
+    ? picks.length === answer.length && picks.every(Boolean)
+    : answer.length > 1 ? picks.length === answer.length : picks.length > 0;
+  const last = state.at === order.length - 1;
+
+  document.getElementById("card").innerHTML = `
+    ${state.reviewIds && state.reviewIds.length ? `<div class="banner">
+      <span>Reviewing ${order.length} missed question${order.length === 1 ? "" : "s"}.</span>
+      <span class="spacer"></span>
+      <button class="btn btn-quiet" type="button" id="exitReviewBtn">Show all questions</button>
+    </div>` : ""}
+    <div class="card-head">
+      <span class="qno">Q${q.id}</span>
+      <span class="eyebrow">Topic ${q.topic || 1} · ${state.at + 1} of ${order.length}</span>
+      ${q.format ? `<span class="chip">${esc(q.format)}</span>` : ""}
+      ${answer.length > 1 ? `<span class="eyebrow">${isOrder(q)
+        ? `Tap in order · ${picks.length}/${answer.length} placed`
+        : isMatch(q)
+        ? `Match each row · ${picks.filter(Boolean).length}/${answer.length} set`
+        : `Choose ${answer.length} · ${picks.length} selected`}</span>` : ""}
+    </div>
+    ${q.caseStudy && CASE_STUDIES[q.caseStudy] ? `<details class="case"${state.caseOpen ? " open" : ""}>
+      <summary>Case study</summary>
+      <div class="case-body">${paras(CASE_STUDIES[q.caseStudy])}</div>
+    </details>` : ""}
+    <div class="stem">${emphasize(paras(q.stem))}</div>
+    <div class="${isMatch(q) ? "" : "options"}">${opts}</div>
+    ${verdictRow}
+    ${keyBlock}
+    <div class="actions">
+      <button class="btn btn-primary" type="button" id="verifyBtn" ${complete && !revealed ? "" : "disabled"}>Verify answer</button>
+      <button class="btn" type="button" id="revealBtn" ${revealed ? "disabled" : ""}>Show answer</button>
+      ${answer.length > 1 && picks.filter(Boolean).length && !revealed ? `<button class="btn btn-quiet" type="button" id="clearBtn">${isOrder(q) ? "Clear order" : isMatch(q) ? "Clear matches" : "Clear selection"}</button>` : ""}
+      <span class="spacer"></span>
+      <button class="btn btn-quiet" type="button" id="prevBtn" ${state.at === 0 ? "disabled" : ""}>← Previous</button>
+      ${last
+        ? `<button class="btn" type="button" id="finishBtn">See result →</button>`
+        : `<button class="btn" type="button" id="nextBtn">Next →</button>`}
+    </div>`;
+
+  wireCard();
+}
+
+function renderResult() {
+  const t = tally();
+  const missed = QUESTIONS.filter(q => ["wrong", "revealed"].includes(outcome(q)));
+  const pctOf = n => (t.total ? n / t.total * 100 : 0) + "%";
+
+  const rows = [
+    ["right", t.right, "Correct"],
+    ["wrong", t.wrong, "Incorrect"],
+    ["shown", t.revealed, "Revealed"],
+    ["", t.left, "Not attempted"]
+  ].map(([kind, n, label]) =>
+    `<div class="brow"${kind ? ` data-kind="${kind}"` : ""}><span class="n">${n}</span><span class="l">${label}</span></div>`
+  ).join("");
+
+  const list = QUESTIONS.map(q => {
+    const o = outcome(q);
+    const kind = o === "right" ? "right" : o === "wrong" ? "wrong" : o === "revealed" ? "shown" : "";
+    const label = o === "right" ? "Correct" : o === "wrong" ? "Incorrect" : o === "revealed" ? "Revealed" : "Skipped";
+    return `<button class="qrow" type="button" data-qid="${q.id}">
+      <span class="qid">Q${q.id}</span>
+      <span class="pill"${kind ? ` data-kind="${kind}"` : ""}>${label}</span>
+      <span class="qtext">${esc(askedIn(q))}</span>
+    </button>`;
+  }).join("");
+
+  const elapsed = state.startedAt
+    ? duration((state.finishedAt || Date.now()) - state.startedAt) : null;
+
+  document.getElementById("card").innerHTML = `
+    <div class="card-head">
+      <span class="qno">Result</span>
+      <span class="eyebrow">MLA-C01 practice · ${t.total} questions${elapsed ? " · " + elapsed : ""}</span>
+      ${t.left === 0 ? `<span class="chip">Complete</span>` : ""}
+    </div>
+
+    <div class="result-top">
+      <div class="score-figure">${t.pct}<span>%</span></div>
+      <div class="score-meta">
+        <div class="score-line">${t.scored
+          ? `<b>${t.right}</b> of <b>${t.scored}</b> scored questions correct${t.left ? ` · ${t.left} still untouched` : ""}`
+          : "Nothing scored yet — answer or reveal a question and your result builds here."}</div>
+        <div class="segbar">
+          <i class="s-right" style="width:${pctOf(t.right)}"></i>
+          <i class="s-wrong" style="width:${pctOf(t.wrong)}"></i>
+          <i class="s-shown" style="width:${pctOf(t.revealed)}"></i>
+        </div>
+      </div>
+    </div>
+
+    <div class="breakdown">${rows}</div>
+
+    <p class="note">
+      A question you reveal with <b>Show answer</b> counts as incorrect — you did not answer it cold.
+      ${t.revealed
+        ? `Set the ${t.revealed} revealed question${t.revealed === 1 ? "" : "s"} aside and you scored <b>${t.right} of ${t.answered}</b> (${t.pctAnswered}%) on what you actually answered.`
+        : ``}
+      This is a raw percentage of this bank. AWS scales the real exam to a 100–1000 range, so treat it as a study signal, not a predicted exam score.
+    </p>
+
+    <div class="qlist">${list}</div>
+
+    <div class="actions">
+      ${missed.length ? `<button class="btn btn-primary" type="button" id="reviewBtn">Review the ${missed.length} you missed</button>` : ""}
+      <button class="btn" type="button" id="backBtn">Back to questions</button>
+      <span class="spacer"></span>
+      <button class="btn btn-quiet" type="button" id="retakeBtn">Retake from scratch</button>
+    </div>`;
+
+  document.querySelectorAll(".qrow").forEach(row => {
+    row.addEventListener("click", () => {
+      state.reviewIds = null;
+      state.view = "quiz";
+      goToQuestion(Number(row.dataset.qid));
+      save();
+      render();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+  });
+
+  const reviewBtn = document.getElementById("reviewBtn");
+  if (reviewBtn) reviewBtn.addEventListener("click", () => {
+    state.reviewIds = missed.map(q => q.id);
+    state.view = "quiz";
+    state.at = 0;
+    save();
+    render();
+  });
+
+  document.getElementById("backBtn").addEventListener("click", () => {
+    state.view = "quiz";
+    save();
+    render();
+  });
+
+  document.getElementById("retakeBtn").addEventListener("click", () => {
+    if (!confirm("Clear every mark and start the bank over?")) return;
+    state.marks = {};
+    state.reviewIds = null;
+    state.startedAt = null;
+    state.finishedAt = null;
+    state.at = 0;
+    state.view = "quiz";
+    if (state.shuffle) state.perm = shuffledIndexes();
+    save();
+    render();
+  });
+}
+
+function wireCard() {
+  document.querySelectorAll(".opt").forEach(btn => {
+    btn.addEventListener("click", () => pick(btn.dataset.letter));
+  });
+  document.querySelectorAll(".chip-opt").forEach(btn => {
+    btn.addEventListener("click", () => pickSlot(Number(btn.dataset.slot), btn.dataset.letter));
+  });
+  document.getElementById("verifyBtn").addEventListener("click", verify);
+  document.getElementById("revealBtn").addEventListener("click", reveal);
+  document.getElementById("prevBtn").addEventListener("click", () => go(state.at - 1));
+
+  const next = document.getElementById("nextBtn");
+  if (next) next.addEventListener("click", () => go(state.at + 1));
+
+  const finish = document.getElementById("finishBtn");
+  if (finish) finish.addEventListener("click", showResult);
+
+  const clear = document.getElementById("clearBtn");
+  if (clear) clear.addEventListener("click", () => {
+    delete state.marks[current().id];
+    save();
+    render();
+  });
+
+  const exit = document.getElementById("exitReviewBtn");
+  if (exit) exit.addEventListener("click", () => {
+    const qid = current().id;
+    state.reviewIds = null;
+    goToQuestion(qid);
+    save();
+    render();
+  });
+
+  const c = document.querySelector(".case");
+  if (c) c.addEventListener("toggle", () => { state.caseOpen = c.open; save(); });
+}
+
+function renderRail() {
+  const order = viewOrder();
+  const here = state.view === "quiz" ? QUESTIONS[order[state.at]] : null;
+
+  document.getElementById("bubbles").innerHTML = order.map((qi, pos) => {
+    const q = QUESTIONS[qi];
+    const o = outcome(q);
+    const s = o === "right" ? "right" : o === "wrong" ? "wrong" : o === "revealed" ? "shown" : "";
+    return `<button class="bub" type="button" data-pos="${pos}" ${s ? `data-state="${s}"` : ""}
+      aria-current="${here === q}" title="Question ${q.id}">${q.id}</button>`;
+  }).join("");
+
+  document.querySelectorAll(".bub").forEach(b => {
+    b.addEventListener("click", () => { state.view = "quiz"; go(Number(b.dataset.pos)); });
+  });
+
+  const t = tally();
+  document.getElementById("tallyFigure").innerHTML = `${t.pct}<span>%</span>`;
+  document.getElementById("barRight").style.width = (t.right / t.total * 100) + "%";
+  document.getElementById("barWrong").style.width = (t.wrong / t.total * 100) + "%";
+  document.getElementById("barShown").style.width = (t.revealed / t.total * 100) + "%";
+  document.getElementById("tallyNote").textContent = t.scored
+    ? `${t.right} right · ${t.wrong} wrong · ${t.revealed} shown · ${t.left} left`
+    : "Nothing attempted yet";
+  document.getElementById("bankSize").textContent =
+    state.reviewIds && state.reviewIds.length ? `${order.length} in review` : `${t.total} in bank`;
+}
+
+/* ---------- actions ---------- */
+
+function pick(letter) {
+  const q = current();
+  const mark = markOf(q);
+  if (state.study || (mark && (mark.verified || mark.revealed))) return;
+
+  let picked;
+  if (isOrder(q)) {
+    const currentPicks = picksOf(mark);
+    const at = currentPicks.indexOf(letter);
+    if (at > -1) picked = currentPicks.filter(l => l !== letter);        // tap again to unplace
+    else if (currentPicks.length >= answerOf(q).length) return;          // sequence already full
+    else picked = currentPicks.concat(letter);
+  } else if (answerOf(q).length > 1) {
+    const currentPicks = picksOf(mark);                                  // a "choose two" question
+    const at = currentPicks.indexOf(letter);
+    if (at > -1) picked = currentPicks.filter(l => l !== letter);
+    else if (currentPicks.length >= answerOf(q).length) return;
+    else picked = currentPicks.concat(letter);
+  } else {
+    picked = letter;
+  }
+
+  stamp();
+  state.marks[q.id] = Object.assign({}, mark, { picked });
+  save();
+  render();
+}
+
+// Matching questions hold one letter per prompt row, so a pick names its row.
+function pickSlot(slot, letter) {
+  const q = current();
+  const mark = markOf(q);
+  if (state.study || (mark && (mark.verified || mark.revealed))) return;
+  const size = answerOf(q).length;
+  const cur = picksOf(mark);
+  const picked = Array.from({ length: size }, (_, i) => cur[i] || "");
+  picked[slot] = picked[slot] === letter ? "" : letter;   // tap the same letter to unset
+  stamp();
+  state.marks[q.id] = Object.assign({}, mark, { picked });
+  save();
+  render();
+}
+
+function verify() {
+  const q = current();
+  const mark = markOf(q);
+  if (!mark || !picksOf(mark).filter(Boolean).length) return;
+  stamp();
+  state.marks[q.id] = Object.assign({}, mark, { verified: true });
+  save();
+  render();
+}
+
+function reveal() {
+  const q = current();
+  stamp();
+  state.marks[q.id] = Object.assign({ picked: null }, markOf(q), { revealed: true });
+  save();
+  render();
+}
+
+function go(pos) {
+  const order = viewOrder();
+  if (pos < 0 || pos >= order.length) return;
+  state.at = pos;
+  state.view = "quiz";
+  state.flipped = false;        // every card arrives face up
+  save();
+  render();
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function showResult() {
+  if (tally().left === 0 && state.startedAt) state.finishedAt = Date.now();
+  state.view = "result";
+  save();
+  render();
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+/* ---------- rail controls ---------- */
+
+function setMode(mode) {
+  state.mode = mode;
+  state.flipped = false;
+  state.view = "quiz";
+  document.getElementById("modeSheet").setAttribute("aria-pressed", String(mode === "sheet"));
+  document.getElementById("modeCards").setAttribute("aria-pressed", String(mode === "cards"));
+  save();
+  render();
+}
+document.getElementById("modeSheet").addEventListener("click", () => setMode("sheet"));
+document.getElementById("modeCards").addEventListener("click", () => setMode("cards"));
+document.getElementById("modeSheet").setAttribute("aria-pressed", String(state.mode !== "cards"));
+document.getElementById("modeCards").setAttribute("aria-pressed", String(state.mode === "cards"));
+
+const shuffleBox = document.getElementById("shuffleMode");
+shuffleBox.checked = !!state.shuffle;
+shuffleBox.addEventListener("change", e => {
+  const qid = state.view === "quiz" ? current().id : null;
+  state.shuffle = e.target.checked;
+  if (state.shuffle) state.perm = shuffledIndexes();   // a fresh draw each time it goes on
+  if (qid !== null) goToQuestion(qid);
+  save();
+  render();
+});
+
+const studyBox = document.getElementById("studyMode");
+studyBox.checked = !!state.study;
+studyBox.addEventListener("change", e => {
+  state.study = e.target.checked;
+  save();
+  render();
+});
+
+document.getElementById("randomBtn").addEventListener("click", () => {
+  const order = viewOrder();
+  const fresh = order.filter((qi, pos) => !outcome(QUESTIONS[qi]) && pos !== state.at);
+  const pool = fresh.length ? fresh : order.filter((_, pos) => pos !== state.at);
+  if (!pool.length) return;
+  const qi = pool[Math.floor(Math.random() * pool.length)];
+  go(order.indexOf(qi));
+});
+
+document.getElementById("resultBtn").addEventListener("click", showResult);
+
+document.getElementById("resetBtn").addEventListener("click", () => {
+  if (!confirm("Clear every mark and start the bank over?")) return;
+  state.marks = {};
+  state.reviewIds = null;
+  state.startedAt = null;
+  state.finishedAt = null;
+  state.at = 0;
+  state.view = "quiz";
+  save();
+  render();
+});
+
+/* ---------- paste importer ---------- */
+
+const HEADING = /^\s*Question\s*#\s*(\d+)\s*Topic\s*(\d+)\s*$/i;
+const OPTION  = /^\s*([A-F])[.)]\s+(.*)$/;
+const ANSWER  = /^\s*Correct\s*Answer\s*:?\s*(.*)$/i;
+const VOTEHEAD = /^\s*Community\s+vote\s+distribution/i;
+const NOISE = /^\s*(Reveal Solution|Hide Solution|Show Suggested Answer|Most Voted|upvoted.*|\d+\s+(year|month|week|day|hour)s?\s+ago.*)\s*$/i;
+
+const stripVoted = s => s.replace(/\s*Most\s+Voted\s*$/i, "").trim();
+
+// Pasted questions usually put each paragraph on its own line with no blank line
+// between, so fall back to single newlines when there are no blank lines to use.
+const splitParas = s => {
+  const t = s.trim();
+  const parts = /\n[ \t]*\n/.test(t) ? t.split(/\n[ \t]*\n/) : t.split(/\n/);
+  return parts.map(p => p.trim()).filter(Boolean);
+};
+
+function hashKey(s) {
+  let h = 5381;
+  for (let i = 0; i < s.length; i++) h = ((h << 5) + h + s.charCodeAt(i)) | 0;
+  return "cs" + Math.abs(h).toString(36);
+}
+
+// Chunk the paste into one block per question, then read each block.
+function parseBank(text) {
+  const lines = text.replace(/\r/g, "").split("\n");
+  const chunks = [];
+  let cur = null;
+
+  lines.forEach(line => {
+    const head = line.match(HEADING);
+    if (head) { cur = { id: +head[1], topic: +head[2], lines: [] }; chunks.push(cur); return; }
+    if (!cur) { cur = { id: null, topic: 1, lines: [] }; chunks.push(cur); }
+    cur.lines.push(line);
+  });
+
+  const parsed = [], skipped = [];
+
+  chunks.forEach(chunk => {
+    const stemLines = [], options = {};
+    let order = [], letter = null, answerRaw = null, phase = "stem", voteLines = [];
+
+    chunk.lines.forEach(line => {
+      if (NOISE.test(line)) return;
+
+      const ans = line.match(ANSWER);
+      if (ans) { answerRaw = ans[1]; phase = "after"; letter = null; return; }
+      if (VOTEHEAD.test(line)) { phase = "votes"; return; }
+
+      if (phase === "votes") { voteLines.push(line); return; }
+
+      const opt = line.match(OPTION);
+      if (opt && phase !== "after") {
+        phase = "options";
+        letter = opt[1];
+        order.push(letter);
+        options[letter] = opt[2];
+        return;
+      }
+
+      if (phase === "options" && letter && line.trim()) {
+        options[letter] += " " + line.trim();          // an option wrapped onto the next line
+        return;
+      }
+      if (phase === "stem") stemLines.push(line);
+    });
+
+    let stem = stemLines.join("\n").replace(/\n{3,}/g, "\n\n").trim();
+    const label = chunk.id ? "Q" + chunk.id : "an untitled question";
+
+    let format = null;
+    if (/^\s*HOTSPOT\s*-?\s*$/im.test(stem)) {
+      format = "HOTSPOT";
+      stem = stem.replace(/^\s*HOTSPOT\s*-?\s*$/im, "").trim();
+    }
+    const caseFlag = /^\s*Case\s+stud(?:y|ies)\s*-?\s*$/im.test(stem);
+    if (caseFlag) stem = stem.replace(/^\s*Case\s+stud(?:y|ies)\s*-?\s*$/im, "").trim();
+
+    if (answerRaw !== null && /image|exhibit/i.test(answerRaw)) {
+      skipped.push(`${label} — the answer is an image, so there is nothing to grade against`);
+      return;
+    }
+    if (!order.length || !stem) { skipped.push(`${label} — no options or no question text`); return; }
+    if (answerRaw === null) { skipped.push(`${label} — no "Correct Answer" line`); return; }
+
+    const letters = (answerRaw.toUpperCase().match(/[A-F]/g) || []).filter(L => options[L]);
+    if (!letters.length) { skipped.push(`${label} — could not read the answer from "${answerRaw.trim()}"`); return; }
+
+    const votes = [];
+    voteLines.join("\n").split("\n").forEach(line => {
+      let m, re = /\b([A-F])\s*\((\d+)%\)/g;
+      let found = false;
+      while ((m = re.exec(line))) { votes.push([m[1], +m[2]]); found = true; }
+      if (!found) {
+        const bare = line.match(/^\s*(\d+)%\s*$/);
+        if (bare) votes.push(["?", +bare[1]]);
+      }
+    });
+
+    Object.keys(options).forEach(L => { options[L] = stripVoted(options[L]); });
+
+    parsed.push({
+      id: chunk.id,
+      topic: chunk.topic || 1,
+      format,
+      caseFlag,
+      paras: splitParas(stem),
+      options,
+      answer: letters.length === 1 ? letters[0] : letters,
+      votes: votes.length ? votes : undefined
+    });
+  });
+
+  return { parsed, skipped };
+}
+
+// A case study repeated across questions is stored once. Questions that share an
+// identical opening paragraph are compared to find how far the shared text runs.
+function liftCaseStudies(parsed) {
+  const cases = {};
+
+  // First reuse any case study already in the bank.
+  parsed.forEach(p => {
+    if (!p.caseFlag) return;
+    for (const key of Object.keys(CASE_STUDIES)) {
+      const known = splitParas(CASE_STUDIES[key]);
+      if (known.length < p.paras.length && known.every((t, i) => p.paras[i] === t)) {
+        p.caseStudy = key;
+        p.paras = p.paras.slice(known.length);
+        return;
+      }
+    }
+  });
+
+  const groups = {};
+  parsed.forEach(p => {
+    if (!p.caseFlag || p.caseStudy || !p.paras.length) return;
+    (groups[p.paras[0]] = groups[p.paras[0]] || []).push(p);
+  });
+
+  Object.values(groups).forEach(group => {
+    if (group.length < 2) return;
+    let n = 0;
+    // Stop one paragraph short of any member's end — a stem must keep its question.
+    while (group.every(p => n < p.paras.length - 1 && p.paras[n] === group[0].paras[n])) n++;
+    if (!n) return;
+    const text = group[0].paras.slice(0, n).join("\n\n");
+    const key = hashKey(text);
+    cases[key] = text;
+    group.forEach(p => { p.caseStudy = key; p.paras = p.paras.slice(n); });
+  });
+
+  return cases;
+}
+
+function runImport() {
+  const box = document.getElementById("importText");
+  const out = document.getElementById("importReport");
+  const raw = box.value.trim();
+  if (!raw) { out.innerHTML = `<span class="bad">Nothing to read — paste some questions first.</span>`; return; }
+
+  const { parsed, skipped } = parseBank(raw);
+  if (!parsed.length) {
+    out.innerHTML = `<span class="bad">No questions could be read.</span>` +
+      (skipped.length ? `<br>${skipped.map(esc).join("<br>")}` : "");
+    return;
+  }
+
+  const cases = liftCaseStudies(parsed);
+  const taken = new Set(QUESTIONS.map(q => q.id));
+  let nextFree = Math.max(0, ...QUESTIONS.map(q => q.id)) + 1;
+
+  let added = 0, updated = 0;
+  const built = parsed.map(p => {
+    let id = p.id;
+    if (id === null) { while (taken.has(nextFree)) nextFree++; id = nextFree++; }
+    taken.has(id) ? updated++ : added++;
+    taken.add(id);
+    const q = { id, topic: p.topic, stem: p.paras.join("\n\n"), options: p.options, answer: p.answer };
+    if (p.caseStudy) q.caseStudy = p.caseStudy;
+    if (p.format) q.format = p.format;
+    if (p.votes) q.votes = p.votes;
+    return q;
+  });
+
+  state.importedCases = Object.assign({}, state.importedCases, cases);
+  const keep = new Map((state.imported || []).map(q => [q.id, q]));
+  built.forEach(q => keep.set(q.id, q));
+  state.imported = [...keep.values()];
+  state.perm = null;              // the bank changed size, so the old shuffle is stale
+  mergeImported();
+
+  save();
+  render();
+
+  out.innerHTML = `<span class="ok"><b>${added} added</b>${updated ? `, ${updated} replaced` : ""}.</span> ` +
+    `The bank now holds ${QUESTIONS.length} questions.` +
+    (Object.keys(cases).length ? ` ${Object.keys(cases).length} case stud${Object.keys(cases).length === 1 ? "y was" : "ies were"} detected and stored once.` : "") +
+    (skipped.length ? `<br><span class="bad">Skipped ${skipped.length}:</span><br>${skipped.map(esc).join("<br>")}` : "");
+  box.value = "";
+}
+
+function exportImported() {
+  const out = document.getElementById("importReport");
+  const list = state.imported || [];
+  if (!list.length) { out.innerHTML = `<span class="bad">Nothing imported yet — parse some questions first.</span>`; return; }
+
+  const cases = state.importedCases || {};
+  const caseJs = Object.keys(cases).length
+    ? "// paste inside CASE_STUDIES\n" + Object.entries(cases)
+        .map(([k, v]) => `  ${k}: ${JSON.stringify(v)},`).join("\n") + "\n\n"
+    : "";
+  const js = caseJs + "// paste inside the QUESTIONS array\n" +
+    list.map(q => "  " + JSON.stringify(q, null, 2).split("\n").join("\n  ")).join(",\n") + ",";
+
+  const box = document.getElementById("importText");
+  const done = () => {
+    out.innerHTML = `<span class="ok">Copied ${list.length} question${list.length === 1 ? "" : "s"} as JavaScript.</span> ` +
+      `Paste it into the <b>QUESTIONS</b> array near the top of index.html to make them permanent, ` +
+      `then use <b>Remove imported</b> to clear the browser copy.`;
+  };
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(js).then(done, () => {
+      box.value = js;
+      out.innerHTML = `Clipboard is blocked here — the JavaScript is in the box above instead. Select it all and copy.`;
+    });
+  } else {
+    box.value = js;
+    out.innerHTML = `The JavaScript is in the box above. Select it all and copy.`;
+  }
+}
+
+document.getElementById("importBtn").addEventListener("click", () => {
+  const panel = document.getElementById("importPanel");
+  panel.hidden = !panel.hidden;
+  if (!panel.hidden) document.getElementById("importText").focus();
+});
+document.getElementById("importClose").addEventListener("click", () => {
+  document.getElementById("importPanel").hidden = true;
+});
+document.getElementById("importRun").addEventListener("click", runImport);
+document.getElementById("importExport").addEventListener("click", exportImported);
+document.getElementById("importClear").addEventListener("click", () => {
+  const n = (state.imported || []).length;
+  if (!n) return;
+  if (!confirm(`Remove the ${n} imported question${n === 1 ? "" : "s"} from this browser? Questions written into index.html stay.`)) return;
+  state.imported = [];
+  state.importedCases = {};
+  state.perm = null;
+  state.at = 0;
+  save();
+  // Reload rather than splice: an import can replace a question defined in the
+  // file, and only a fresh load restores the original reliably.
+  location.reload();
+});
+
+document.addEventListener("keydown", e => {
+  if (e.metaKey || e.ctrlKey || e.altKey) return;
+  const tag = (e.target.tagName || "").toLowerCase();
+  if (tag === "input" || tag === "textarea") return;
+
+  if (state.view === "result") {
+    if (e.key === "Escape") { state.view = "quiz"; save(); render(); }
+    return;
+  }
+
+  if (state.mode === "cards") {
+    if (e.key === " " || e.key === "Enter") { e.preventDefault(); flip(); }
+    else if (e.key === "k" || e.key === "K") selfGrade("knew");
+    else if (e.key === "m" || e.key === "M") selfGrade("missed");
+    else if (e.key === "ArrowRight") go(state.at + 1);
+    else if (e.key === "ArrowLeft") go(state.at - 1);
+    else if (e.key === "r" || e.key === "R") document.getElementById("randomBtn").click();
+    return;
+  }
+
+  const L = e.key.toUpperCase();
+  const q = current();
+  if (LETTERS.includes(L) && q.options[L]) {
+    e.preventDefault();
+    if (isMatch(q)) {
+      const cur = picksOf(markOf(q));
+      const size = answerOf(q).length;
+      let slot = 0;
+      while (slot < size && cur[slot]) slot++;
+      if (slot < size) pickSlot(slot, L);
+    } else pick(L);
+  }
+  else if (e.key === "Enter") {
+    const b = document.getElementById("verifyBtn");
+    if (b && !b.disabled) { e.preventDefault(); verify(); }
+  }
+  else if (e.key === "ArrowRight") go(state.at + 1);
+  else if (e.key === "ArrowLeft") go(state.at - 1);
+  else if (e.key === "r" || e.key === "R") document.getElementById("randomBtn").click();
+});
+
+render();
+</script>
